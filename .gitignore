@@ -35,3 +35,11 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### secret yml file ###
+application-oauth.yml
+application-aws.yml
+application-local-db.yml
+
+### secret .sql file ###
+wearedevs.sql
