@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ### secret yml file ###
-application-oauth.yml
+application-oauth2.yml
 application-aws.yml
 application-local-db.yml
 
