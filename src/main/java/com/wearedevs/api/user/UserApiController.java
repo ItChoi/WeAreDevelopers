@@ -1,5 +1,6 @@
 package com.wearedevs.api.user;
 
+import com.wearedevs.web.user.domain.User;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class UserApiController {
     @PostMapping("/api/user")
     public ResponseEntity<Long> createUser(@RequestBody UserRegisterRequestDto requestDto) {
         Long userId = userService.createUser(requestDto);
+
         return new ResponseEntity<>(null);
     }
 

@@ -5,10 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -23,6 +20,7 @@ public class UserInfo extends BaseDateTimeEntity implements Serializable {
     /**
      * 사용자 정보 고유 번호
      */
+    @GeneratedValue
     @Id
     @ApiModelProperty("사용자 정보 고유 번호")
     @Column(name = "ID", nullable = false)

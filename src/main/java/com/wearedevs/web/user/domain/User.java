@@ -5,8 +5,7 @@ import com.wearedevs.common.enumeration.user.LoginType;
 import com.wearedevs.common.enumeration.user.UserActiveStatus;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +15,7 @@ import java.util.Date;
 /**
  * 사용자 정보
  */
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -28,6 +28,8 @@ public class User extends BaseDateTimeEntity implements Serializable {
     /**
      * 사용자 고유 번호
      */
+    // TODO @GeneratedValue - strategy 전략 적용
+    @GeneratedValue
     @Id
     @ApiModelProperty("사용자 고유 번호")
     @Column(name = "ID", nullable = false)
@@ -102,4 +104,16 @@ public class User extends BaseDateTimeEntity implements Serializable {
     @JoinColumn(name = "id")
     private UserInfo userInfo;
 
+    @Builder
+    public User(String loginId, String password, String name, String email, String profileImageName, LoginType loginType, UserActiveStatus userActiveStatus, LocalDateTime lastLoginDate, UserInfo userInfo) {
+        this.loginId = loginId;
+        this.password = password;
+        this.name = name;
+        this.email = email;
+        this.profileImageName = profileImageName;
+        this.loginType = loginType;
+        this.userActiveStatus = userActiveStatus;
+        this.lastLoginDate = lastLoginDate;
+        this.userInfo = userInfo;
+    }
 }
