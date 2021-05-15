@@ -2,12 +2,15 @@ package com.wearedevs.web.user.domain;
 
 import com.wearedevs.common.domain.BaseDateTimeEntity;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
+@NoArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -28,9 +31,10 @@ public class UserInfo extends BaseDateTimeEntity implements Serializable {
     /**
      * (사용자 고유 번호)
      */
-    @ApiModelProperty("(사용자 고유 번호)")
-    @Column(name = "USER_ID", nullable = false)
-    private Long userId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @ApiModelProperty("사용자 고유 번호")
+    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
+    private CshUser cshUser;
 
     /**
      * 소개 내용
@@ -46,4 +50,9 @@ public class UserInfo extends BaseDateTimeEntity implements Serializable {
     @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
 
+    @Builder
+    public UserInfo(String introduce, String phoneNumber) {
+        this.introduce = introduce;
+        this.phoneNumber = phoneNumber;
+    }
 }

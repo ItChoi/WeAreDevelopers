@@ -23,5 +23,4 @@ public class CustomBean {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
 }

@@ -10,7 +10,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * 사용자 정보
@@ -21,8 +20,7 @@ import java.util.Date;
 @Entity
 @ApiModel("사용자 정보")
 @Table(name = "csh_user")
-public class User extends BaseDateTimeEntity implements Serializable {
-
+public class CshUser extends BaseDateTimeEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -99,12 +97,16 @@ public class User extends BaseDateTimeEntity implements Serializable {
     @Column(name = "LAST_LOGIN_DATE")
     private LocalDateTime lastLoginDate;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @OneToOne(mappedBy = "cshUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private UserInfo userInfo;
 
+    @OneToOne(mappedBy = "cshUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private UserRole userRole;
+
+
+
     @Builder
-    public User(String loginId, String password, String name, String email, String profileImageName, LoginType loginType, UserActiveStatus userActiveStatus, LocalDateTime lastLoginDate, UserInfo userInfo) {
+    public CshUser(String loginId, String password, String name, String email, String profileImageName, LoginType loginType, UserActiveStatus userActiveStatus, LocalDateTime lastLoginDate, UserInfo userInfo, UserRole userRole) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -114,5 +116,12 @@ public class User extends BaseDateTimeEntity implements Serializable {
         this.userActiveStatus = userActiveStatus;
         this.lastLoginDate = lastLoginDate;
         this.userInfo = userInfo;
+        this.userRole = userRole;
     }
+
+
+
+
+
+
 }

@@ -3,12 +3,17 @@ package com.wearedevs.api.user;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserApiController {
@@ -16,8 +21,16 @@ public class UserApiController {
 
     // 회원가입
     @PostMapping("/api/user")
-    public ResponseEntity<Long> createUser(@RequestBody UserRegisterRequestDto requestDto) {
-        Long userId = userService.createUser(requestDto);
+    public ResponseEntity<Long> createUser(@Valid @RequestBody UserRegisterRequestDto requestDto, BindingResult bindingResult) {
+        Long userId = null;
+        try {
+            if (bindingResult.hasErrors() || (userId = userService.createUser(requestDto)) == null) {
+                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            log.error("ERROR: {}", e);
+        }
+
         return new ResponseEntity<>(userId, HttpStatus.OK);
     }
 
