@@ -77,7 +77,7 @@ public class CshUser extends BaseDateTimeEntity implements Serializable {
     /**
      * 사용자 로그인 타입 (kakao, google, naver, ...)
      */
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "LOGIN_TYPE")
     @ApiModelProperty("사용자 로그인 타입 (kakao, google, naver, ...)")
     private LoginType loginType;
@@ -85,7 +85,7 @@ public class CshUser extends BaseDateTimeEntity implements Serializable {
     /**
      * 사용자 활동 상태
      */
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @ApiModelProperty("사용자 활동 상태")
     @Column(name = "USER_ACTIVE_STATUS")
     private UserActiveStatus userActiveStatus;

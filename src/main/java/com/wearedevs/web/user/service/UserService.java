@@ -8,14 +8,12 @@ import com.wearedevs.web.user.domain.UserRole;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,9 +39,10 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public Long createUser(UserRegisterRequestDto requestDto) throws Exception {
+    public Long createUser(UserRegisterRequestDto requestDto) {
         boolean existsUserLoginId = userRepository.existsByLoginId(requestDto.getLoginId());
         if (existsUserLoginId) throw new ExistsUserException("이미 존재하는 아이디 입니다.");
+        // TODO userInfo -> userId
         CshUser user = builderCshUserByRequestDto(requestDto);
         userRepository.save(user);
         return user.getId();
@@ -51,7 +50,7 @@ public class UserService implements UserDetailsService {
 
     public CshUser builderCshUserByRequestDto(UserRegisterRequestDto requestDto) {
         // TODO 파일 처리
-        return CshUser.builder()
+        CshUser userBuilder = CshUser.builder()
                 .loginId(requestDto.getLoginId())
                 //.password(passwordEncoder.encode(requestDto.getPassword()))
                 .password(requestDto.getPassword())
@@ -59,19 +58,29 @@ public class UserService implements UserDetailsService {
                 .email(requestDto.getEmail())
                 .loginType(requestDto.getLoginType())
                 .userActiveStatus(UserActiveStatus.ACTIVITY)
-                .userInfo(
-                    UserInfo.builder()
-                    .introduce(requestDto.getIntroduce())
-                    .phoneNumber(requestDto.getPhoneNumber())
-                    .build()
-                )
-                .userRole(
-                    UserRole.builder()
-                    .authority(requestDto.getUserAuthority())
-                    .build()
-                )
+                .build();
+
+        UserInfo userInfoBuilder = builderUserInfoByRequestDto(requestDto);
+
+        UserRole userRoleBuilder = builderUserRoleByRequestDto(requestDto);
+
+        userBuilder.setUserInfo(userInfoBuilder);
+        userBuilder.setUserRole(userRoleBuilder);
+
+        return userBuilder;
+    }
+
+    private UserRole builderUserRoleByRequestDto(UserRegisterRequestDto requestDto) {
+        return UserRole.builder()
+                .authority(requestDto.getUserAuthority())
                 .build();
     }
 
-
+    private UserInfo builderUserInfoByRequestDto(UserRegisterRequestDto requestDto) {
+        UserInfo userInfoBuilder = UserInfo.builder()
+                .introduce(requestDto.getIntroduce())
+                .phoneNumber(requestDto.getPhoneNumber())
+                .build();
+        return userInfoBuilder;
+    }
 }

@@ -40,7 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/login",
                         "/api/user"
                 )
-                .permitAll();
+                .permitAll()
+            .and().csrf()
+                .disable();
     }
 
     @Override

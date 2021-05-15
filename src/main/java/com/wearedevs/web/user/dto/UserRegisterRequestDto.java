@@ -1,18 +1,18 @@
 package com.wearedevs.web.user.dto;
 
-import com.sun.istack.NotNull;
 import com.wearedevs.common.enumeration.user.LoginType;
-import com.wearedevs.common.enumeration.user.UserActiveStatus;
 import com.wearedevs.common.enumeration.user.UserAuthority;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+
 @Setter
 @Getter
 public class UserRegisterRequestDto {
-    @NotNull
+    @NotEmpty
     private String loginId;
-    @NotNull
+    @NotEmpty
     private String password;
     private String name;
     private String email;
@@ -20,5 +20,5 @@ public class UserRegisterRequestDto {
     private String introduce;
     private String phoneNumber;
     private LoginType loginType;
-    private UserAuthority userAuthority;
+    private UserAuthority authority;
 }

@@ -44,7 +44,7 @@ public class UserRole implements Serializable {
     /**
      * 권한 이름
      */
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @ApiModelProperty("권한 이름")
     @Column(name = "AUTHORITY")
     private UserAuthority authority;

@@ -1,5 +1,6 @@
 package com.wearedevs.api.user;
 
+import com.wearedevs.common.utils.LoggingUtils;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,15 +24,18 @@ public class UserApiController {
     @PostMapping("/api/user")
     public ResponseEntity<Long> createUser(@Valid @RequestBody UserRegisterRequestDto requestDto, BindingResult bindingResult) {
         Long userId = null;
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
             if (bindingResult.hasErrors() || (userId = userService.createUser(requestDto)) == null) {
-                return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+                LoggingUtils.validBindingResult(bindingResult);
+                httpStatus = HttpStatus.BAD_REQUEST;
             }
         } catch (Exception e) {
             log.error("ERROR: {}", e);
+            httpStatus = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<>(userId, HttpStatus.OK);
+        return new ResponseEntity<>(userId, httpStatus);
     }
 
 
