@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -20,7 +19,7 @@ public class UserInfo extends BaseDateTimeEntity implements Serializable {
     /**
      * 사용자 정보 고유 번호
      */
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @ApiModelProperty("사용자 정보 고유 번호")
     @Column(name = "ID", nullable = false)

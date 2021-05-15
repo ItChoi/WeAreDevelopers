@@ -28,8 +28,7 @@ public class User extends BaseDateTimeEntity implements Serializable {
     /**
      * 사용자 고유 번호
      */
-    // TODO @GeneratedValue - strategy 전략 적용
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @ApiModelProperty("사용자 고유 번호")
     @Column(name = "ID", nullable = false)

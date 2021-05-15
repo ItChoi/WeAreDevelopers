@@ -1,9 +1,9 @@
 package com.wearedevs.api.user;
 
-import com.wearedevs.web.user.domain.User;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,9 +18,10 @@ public class UserApiController {
     @PostMapping("/api/user")
     public ResponseEntity<Long> createUser(@RequestBody UserRegisterRequestDto requestDto) {
         Long userId = userService.createUser(requestDto);
-
-        return new ResponseEntity<>(null);
+        return new ResponseEntity<>(userId, HttpStatus.OK);
     }
+
+
 
 
 }
