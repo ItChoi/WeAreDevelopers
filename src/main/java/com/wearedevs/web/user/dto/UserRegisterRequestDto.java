@@ -4,6 +4,7 @@ import com.wearedevs.common.enumeration.user.LoginType;
 import com.wearedevs.common.enumeration.user.UserAuthority;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -16,6 +17,7 @@ public class UserRegisterRequestDto {
     private String password;
     private String name;
     private String email;
+    private MultipartFile file;
     private String profileImageName;
     private String introduce;
     private String phoneNumber;

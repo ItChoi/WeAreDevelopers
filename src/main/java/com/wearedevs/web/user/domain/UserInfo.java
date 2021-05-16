@@ -51,7 +51,9 @@ public class UserInfo extends BaseDateTimeEntity implements Serializable {
     private String phoneNumber;
 
     @Builder
-    public UserInfo(String introduce, String phoneNumber) {
+    public UserInfo(Long id, CshUser cshUser, String introduce, String phoneNumber) {
+        this.id = id;
+        this.cshUser = cshUser;
         this.introduce = introduce;
         this.phoneNumber = phoneNumber;
     }

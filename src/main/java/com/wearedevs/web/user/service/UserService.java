@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,7 @@ import java.util.List;
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -42,27 +44,25 @@ public class UserService implements UserDetailsService {
     public Long createUser(UserRegisterRequestDto requestDto) {
         boolean existsUserLoginId = userRepository.existsByLoginId(requestDto.getLoginId());
         if (existsUserLoginId) throw new ExistsUserException("이미 존재하는 아이디 입니다.");
-        // TODO userInfo -> userId
         CshUser user = builderCshUserByRequestDto(requestDto);
         userRepository.save(user);
         return user.getId();
     }
 
+    @Transactional
     public CshUser builderCshUserByRequestDto(UserRegisterRequestDto requestDto) {
         // TODO 파일 처리
         CshUser userBuilder = CshUser.builder()
                 .loginId(requestDto.getLoginId())
-                //.password(passwordEncoder.encode(requestDto.getPassword()))
-                .password(requestDto.getPassword())
+                .password(passwordEncoder.encode(requestDto.getPassword()))
                 .name(requestDto.getName())
                 .email(requestDto.getEmail())
                 .loginType(requestDto.getLoginType())
                 .userActiveStatus(UserActiveStatus.ACTIVITY)
                 .build();
 
-        UserInfo userInfoBuilder = builderUserInfoByRequestDto(requestDto);
-
-        UserRole userRoleBuilder = builderUserRoleByRequestDto(requestDto);
+        UserInfo userInfoBuilder = builderUserInfoByRequestDto(requestDto, userBuilder);
+        UserRole userRoleBuilder = builderUserRoleByRequestDto(requestDto, userBuilder);
 
         userBuilder.setUserInfo(userInfoBuilder);
         userBuilder.setUserRole(userRoleBuilder);
@@ -70,14 +70,16 @@ public class UserService implements UserDetailsService {
         return userBuilder;
     }
 
-    private UserRole builderUserRoleByRequestDto(UserRegisterRequestDto requestDto) {
+    private UserRole builderUserRoleByRequestDto(UserRegisterRequestDto requestDto, CshUser userBuilder) {
         return UserRole.builder()
-                .authority(requestDto.getUserAuthority())
+                .cshUser(userBuilder)
+                .authority(requestDto.getAuthority())
                 .build();
     }
 
-    private UserInfo builderUserInfoByRequestDto(UserRegisterRequestDto requestDto) {
+    private UserInfo builderUserInfoByRequestDto(UserRegisterRequestDto requestDto, CshUser userBuilder) {
         UserInfo userInfoBuilder = UserInfo.builder()
+                .cshUser(userBuilder)
                 .introduce(requestDto.getIntroduce())
                 .phoneNumber(requestDto.getPhoneNumber())
                 .build();

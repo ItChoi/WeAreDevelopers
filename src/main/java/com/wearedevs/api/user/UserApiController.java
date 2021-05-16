@@ -23,6 +23,7 @@ public class UserApiController {
     // 회원가입
     @PostMapping("/api/user")
     public ResponseEntity<Long> createUser(@Valid @RequestBody UserRegisterRequestDto requestDto, BindingResult bindingResult) {
+        // TODO 파일 처리
         Long userId = null;
         HttpStatus httpStatus = HttpStatus.OK;
         try {

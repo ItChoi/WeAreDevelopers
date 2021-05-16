@@ -1,5 +1,6 @@
 package com.wearedevs.web.user.domain;
 
+import com.wearedevs.common.domain.BaseDateTimeEntity;
 import com.wearedevs.common.enumeration.user.UserAuthority;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +21,7 @@ import java.io.Serializable;
 @ApiModel("사용자 권한 정보")
 @Entity
 @Table(name = "CSH_USER_ROLE")
-public class UserRole implements Serializable {
+public class UserRole extends BaseDateTimeEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -52,6 +53,7 @@ public class UserRole implements Serializable {
     @Builder
     public UserRole(Long id, CshUser cshUser, UserAuthority authority) {
         this.id = id;
+        this.cshUser = cshUser;
         this.authority = authority;
     }
 }
