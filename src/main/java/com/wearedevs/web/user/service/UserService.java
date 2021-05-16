@@ -49,7 +49,6 @@ public class UserService implements UserDetailsService {
         return user.getId();
     }
 
-    @Transactional
     public CshUser builderCshUserByRequestDto(UserRegisterRequestDto requestDto) {
         // TODO 파일 처리
         CshUser userBuilder = CshUser.builder()
