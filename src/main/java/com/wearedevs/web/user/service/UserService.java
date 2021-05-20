@@ -5,6 +5,7 @@ import com.wearedevs.common.exception.user.ExistsUserException;
 import com.wearedevs.web.user.domain.CshUser;
 import com.wearedevs.web.user.domain.UserInfo;
 import com.wearedevs.web.user.domain.UserRole;
+import com.wearedevs.web.user.dto.UserDetailInfoResponseDto;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -83,5 +84,20 @@ public class UserService implements UserDetailsService {
                 .phoneNumber(requestDto.getPhoneNumber())
                 .build();
         return userInfoBuilder;
+    }
+
+    public UserDetailInfoResponseDto findUserDetailInfo(Long userId) {
+        CshUser findUser = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException(userId + "가 존재하지 않습니다."));
+
+        return UserDetailInfoResponseDto.builder()
+                .loginId(findUser.getLoginId())
+                .name(findUser.getName())
+                .email(findUser.getEmail())
+                .profileImageName(findUser.getProfileImageName())
+                .introduce(findUser.getUserInfo().getIntroduce())
+                .phoneNumber(findUser.getUserInfo().getPhoneNumber())
+                .loginType(findUser.getLoginType())
+                .authority(findUser.getUserRole().getAuthority())
+                .build();
     }
 }

@@ -1,6 +1,7 @@
 package com.wearedevs.api.user;
 
 import com.wearedevs.common.utils.LoggingUtils;
+import com.wearedevs.web.user.dto.UserDetailInfoResponseDto;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -23,7 +22,6 @@ public class UserApiController {
     // 회원가입
     @PostMapping("/api/user")
     public ResponseEntity<Long> createUser(@Valid @RequestBody UserRegisterRequestDto requestDto, BindingResult bindingResult) {
-        // TODO 파일 처리
         Long userId = null;
         HttpStatus httpStatus = HttpStatus.OK;
         try {
@@ -38,6 +36,14 @@ public class UserApiController {
 
         return new ResponseEntity<>(userId, httpStatus);
     }
+
+    @GetMapping("/api/user/{userId}")
+    public ResponseEntity<UserDetailInfoResponseDto> userDetail(@PathVariable Long userId) {
+        UserDetailInfoResponseDto responseDto = userService.findUserDetailInfo(userId);
+
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
 
 
 

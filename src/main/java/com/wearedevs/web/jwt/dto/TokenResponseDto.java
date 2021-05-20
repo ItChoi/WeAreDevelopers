@@ -11,6 +11,4 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TokenResponseDto {
     private String token;
-
-
 }
