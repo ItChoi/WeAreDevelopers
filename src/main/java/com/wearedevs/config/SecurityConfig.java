@@ -3,6 +3,7 @@ package com.wearedevs.config;
 import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
 import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
 import com.wearedevs.common.utils.jwt.TokenProvider;
+import com.wearedevs.web.oauth.service.CustomOAuth2UserService;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenProvider tokenProvider;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    // OAuth2
+    private final CustomOAuth2UserService customOAuth2UserService;
+
 
 
 
@@ -71,7 +75,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // 커스텀 filter를 추가
                 .and()
-                    .apply(new JwtSecurityConfig(tokenProvider));
+                    .apply(new JwtSecurityConfig(tokenProvider))
+                .and()
+                    .oauth2Login()
+                    .userInfoEndpoint()
+                    .userService(customOAuth2UserService);
+
 
 
     }

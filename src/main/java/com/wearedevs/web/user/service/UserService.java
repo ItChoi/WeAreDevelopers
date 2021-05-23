@@ -57,6 +57,7 @@ public class UserService implements UserDetailsService {
                 .password(passwordEncoder.encode(requestDto.getPassword()))
                 .name(requestDto.getName())
                 .email(requestDto.getEmail())
+                .profileImageName(requestDto.getProfileImageName())
                 .loginType(requestDto.getLoginType())
                 .userActiveStatus(UserActiveStatus.ACTIVITY)
                 .build();
