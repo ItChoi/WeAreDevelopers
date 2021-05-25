@@ -1,5 +1,6 @@
 package com.wearedevs.web.oauth.service;
 
+import com.wearedevs.common.dto.session.SessionUser;
 import com.wearedevs.common.enumeration.user.LoginType;
 import com.wearedevs.common.enumeration.user.UserActiveStatus;
 import com.wearedevs.common.enumeration.user.UserAuthority;
@@ -9,15 +10,18 @@ import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.repository.UserRepository;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
+import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -39,14 +43,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         LoginType loginTypeCode = LoginType.convertByCode(registrationId);
         CshUser targetUser = changeUser(attributes, loginTypeCode);
 
-        //httpSession.setAttribute("user", );
+        httpSession.setAttribute("user", SessionUser.builder().user(targetUser).build());
 
-
-        return null;
+        return new DefaultOAuth2User(
+                Collections.singleton(new SimpleGrantedAuthority(targetUser.getUserRole().getAuthority().getCode())),
+                attributes.getAttributes(),
+                attributes.getNameAttributeKey()
+        );
     }
 
     @Transactional
-    private CshUser changeUser(OAuth2Attributes attributes, LoginType loginType) {
+    public CshUser changeUser(OAuth2Attributes attributes, LoginType loginType) {
         CshUser findUser = userRepository.findByEmailAndLoginType(attributes.getEmail(), loginType).orElse(null);
 
         if (findUser != null) {

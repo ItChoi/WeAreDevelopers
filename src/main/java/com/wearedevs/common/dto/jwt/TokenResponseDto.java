@@ -1,4 +1,4 @@
-package com.wearedevs.web.jwt.dto;
+package com.wearedevs.common.dto.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

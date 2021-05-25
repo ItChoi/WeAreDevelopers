@@ -1,8 +1,8 @@
 package com.wearedevs.api.auth;
 
+import com.wearedevs.common.dto.jwt.TokenResponseDto;
 import com.wearedevs.common.utils.jwt.TokenProvider;
 import com.wearedevs.config.filter.JwtFilter;
-import com.wearedevs.web.jwt.dto.TokenResponseDto;
 import com.wearedevs.web.login.dto.LoginRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
