@@ -11,6 +11,6 @@ public class LoginController {
     @GetMapping("/front/user/login")
     public String loginPage() {
         System.out.println("true = " + true);
-        return "/front/user/login";
+        return "front/user/login";
     }
 }

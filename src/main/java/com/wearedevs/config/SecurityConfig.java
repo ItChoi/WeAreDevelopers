@@ -57,27 +57,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 // H2 console을 위한 설정
-                .and()
-                    .headers()
+                .and().headers()
                     .frameOptions()
                     .sameOrigin()
 
                 // 세션 사용 안하기 때문에 STATELESS로 설정
-                .and()
-                    .sessionManagement()
+                .and().sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and().authorizeRequests()
                     .antMatchers(
-                            "/api/login", "/api/user", "/api/authenticate"
+                            "/api/login", "/api/user", "/api/authenticate",
+                            "/front/user/login"
                     ).permitAll()
                     .anyRequest().authenticated()
 
+                .and().formLogin()
+                .loginPage("/front/user/login")
+
                 // 커스텀 filter를 추가
-                .and()
-                    .apply(new JwtSecurityConfig(tokenProvider))
-                .and()
-                    .oauth2Login()
+                .and().apply(new JwtSecurityConfig(tokenProvider))
+                // OAuth2
+                .and().oauth2Login()
                     .userInfoEndpoint()
                     .userService(customOAuth2UserService);
 

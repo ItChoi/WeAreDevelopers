@@ -2,7 +2,6 @@ package com.wearedevs.web.oauth.service;
 
 import com.wearedevs.common.dto.session.SessionUser;
 import com.wearedevs.common.enumeration.user.LoginType;
-import com.wearedevs.common.enumeration.user.UserActiveStatus;
 import com.wearedevs.common.enumeration.user.UserAuthority;
 import com.wearedevs.web.oauth.dto.OAuth2Attributes;
 import com.wearedevs.web.user.domain.CshUser;
@@ -22,10 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.util.Collections;
-import java.util.Optional;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final HttpSession httpSession;
@@ -34,7 +32,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService delegate = new DefaultOAuth2UserService();
+        //OAuth2UserService delegate = new DefaultOAuth2UserService();
+        OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
@@ -55,8 +54,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     @Transactional
     public CshUser changeUser(OAuth2Attributes attributes, LoginType loginType) {
         CshUser findUser = userRepository.findByEmailAndLoginType(attributes.getEmail(), loginType).orElse(null);
-
-        if (findUser != null) {
+        if (findUser == null) {
             CshUser cshUser = userService.builderCshUserByRequestDto(settingUserRegisterRequestDto(attributes, loginType));
             userRepository.save(cshUser);
 
@@ -67,8 +65,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         findUser.setProfileImageName(attributes.getPicture());
 
         return findUser;
-
-
     }
 
     private UserRegisterRequestDto settingUserRegisterRequestDto(OAuth2Attributes attributes, LoginType loginType) {

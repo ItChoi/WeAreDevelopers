@@ -19,7 +19,7 @@ public enum LoginType {
 
     public static LoginType convertByCode(String code) {
         for (LoginType loginType : LoginType.values()) {
-            if (code.equals(loginType)) {
+            if (code.equals(loginType.getCode())) {
                 return loginType;
             }
         }

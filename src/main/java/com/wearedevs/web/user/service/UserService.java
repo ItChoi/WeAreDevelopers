@@ -8,6 +8,7 @@ import com.wearedevs.web.user.domain.UserRole;
 import com.wearedevs.web.user.dto.UserDetailInfoResponseDto;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.repository.UserRepository;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -52,9 +53,10 @@ public class UserService implements UserDetailsService {
 
     public CshUser builderCshUserByRequestDto(UserRegisterRequestDto requestDto) {
         // TODO 파일 처리
+        String password = requestDto.getPassword();
         CshUser userBuilder = CshUser.builder()
                 .loginId(requestDto.getLoginId())
-                .password(passwordEncoder.encode(requestDto.getPassword()))
+                .password(StringUtils.isEmpty(password) ? "" : passwordEncoder.encode(password))
                 .name(requestDto.getName())
                 .email(requestDto.getEmail())
                 .profileImageName(requestDto.getProfileImageName())
