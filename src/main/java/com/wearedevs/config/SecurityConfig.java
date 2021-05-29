@@ -77,6 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // 커스텀 filter를 추가
                 .and().apply(new JwtSecurityConfig(tokenProvider))
+
                 // OAuth2
                 .and().oauth2Login()
                     .userInfoEndpoint()

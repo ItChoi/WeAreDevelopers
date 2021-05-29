@@ -1,5 +1,7 @@
 package com.wearedevs.web.login.dto;
 
+import com.wearedevs.common.enumeration.user.LoginType;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +21,15 @@ public class LoginRequestDto {
     @NotEmpty
     @Size(min = 3, max = 300)
     private String password;
+
+    private String email;
+    private LoginType loginType;
+
+    @Builder
+    public LoginRequestDto(String username, String password, String email, LoginType loginType) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.loginType = loginType;
+    }
 }

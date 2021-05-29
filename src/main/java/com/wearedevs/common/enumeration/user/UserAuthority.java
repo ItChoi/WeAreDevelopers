@@ -9,7 +9,8 @@ public enum UserAuthority {
     SUPERVISOR("최고 관리자", "supervisor", "ROLE_SUPERVISOR"),
     MANAGER("관리자", "manager", "ROLE_MANAGER"),
     USER("사용자", "user", "ROLE_USER"),
-    ANONYMOUS("익명", "anonymous", "ROLE_ANONYMOUS");
+    ANONYMOUS("익명", "anonymous", "ROLE_ANONYMOUS"),
+    TEST("테스트 계정", "test", "ROLE_TEST");
 
     private final String codeName;
     private final String code;

@@ -4,6 +4,7 @@ package com.wearedevs.web.oauth.dto;
 import com.wearedevs.common.enumeration.user.LoginType;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
@@ -15,6 +16,10 @@ public class OAuth2Attributes {
     private String email;
     private String picture;
 
+    protected OAuth2Attributes() {
+
+    }
+
     @Builder
     public OAuth2Attributes(Map<String, Object> attributes, String nameAttributeKey, String name, String email, String picture) {
         this.attributes = attributes;
@@ -25,7 +30,7 @@ public class OAuth2Attributes {
     }
 
     public static OAuth2Attributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
-        OAuth2Attributes oAuth2Attributes = null;
+        OAuth2Attributes oAuth2Attributes = new OAuth2Attributes();
 
         if (registrationId.equals(LoginType.GOOGLE.getCode())) {
             oAuth2Attributes = ofGoogle(userNameAttributeName, attributes);
