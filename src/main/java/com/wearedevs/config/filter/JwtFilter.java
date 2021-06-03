@@ -3,10 +3,6 @@ package com.wearedevs.config.filter;
 import com.wearedevs.common.dto.session.SessionUser;
 import com.wearedevs.common.enumeration.user.LoginType;
 import com.wearedevs.common.utils.jwt.TokenProvider;
-import com.wearedevs.web.auth.AuthService;
-import com.wearedevs.web.user.domain.CshUser;
-import com.wearedevs.web.user.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,12 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Slf4j
-@AllArgsConstructor
 public class JwtFilter extends GenericFilterBean {
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    private UserRepository userRepository;
-    private AuthService authService;
-
     private TokenProvider tokenProvider;
 
     public JwtFilter(TokenProvider tokenProvider) {
@@ -39,13 +31,12 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
-
-        if (!StringUtils.hasText(jwt)) {
+        /*if (!StringUtils.hasText(jwt)) {
             SessionUser findUserBySession = findOAuth2InfoAtSession(httpServletRequest);
             if (isAvailableOAuth2JwtToken(findUserBySession)) {
                 createOAuth2JwtToken(findUserBySession);
             }
-        }
+        }*/
 
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
@@ -60,17 +51,6 @@ public class JwtFilter extends GenericFilterBean {
 
     private boolean isAvailableOAuth2JwtToken(SessionUser findUserBySession) {
         return existsOAuth2Info(findUserBySession);
-    }
-
-    private void createOAuth2JwtToken(SessionUser findUserBySession) {
-        String email = findUserBySession.getEmail();
-        LoginType loginType = findUserBySession.getLoginType();
-        CshUser findCshUser = userRepository.findByEmailAndLoginType(email, loginType).orElse(null);
-        if (findCshUser != null) {
-            // TODO
-            /*String jwt = authService.createAuthJwtToken(loginRequestDto);
-            HttpHeaders httpHeaders = authService.addJwtTokenOfBearerType(jwt);*/
-        }
     }
 
     private SessionUser findOAuth2InfoAtSession(HttpServletRequest request) {

@@ -1,5 +1,7 @@
 package com.wearedevs.config;
 
+import com.wearedevs.common.enumeration.user.UserAuthority;
+import com.wearedevs.common.exception.jwt.CustomOAuth2AuthenticationHandler;
 import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
 import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
 import com.wearedevs.common.utils.jwt.TokenProvider;
@@ -28,12 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenProvider tokenProvider;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final CustomOAuth2AuthenticationHandler customOAuth2AuthenticationHandler;
     // OAuth2
     private final CustomOAuth2UserService customOAuth2UserService;
-
-
-
-
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -49,7 +48,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.
-                csrf()
+                authorizeRequests()
+                .antMatchers(
+                        "/api/login", "/api/authenticate",
+                        "/front/user/login"
+                ).permitAll()
+                /*.antMatchers(
+                        "/api/user/**"
+                ).hasAnyRole(
+                        UserAuthority.SUPERVISOR.getCode()
+                )*/
+
+                .and().csrf()
                     .disable()
 
                 .exceptionHandling()
@@ -64,24 +74,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 세션 사용 안하기 때문에 STATELESS로 설정
                 .and().sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
-                .and().authorizeRequests()
-                    .antMatchers(
-                            "/api/login", "/api/user", "/api/authenticate",
-                            "/front/user/login"
-                    ).permitAll()
-                    .anyRequest().authenticated()
-
+                /*
                 .and().formLogin()
                 .loginPage("/front/user/login")
-
                 // 커스텀 filter를 추가
                 .and().apply(new JwtSecurityConfig(tokenProvider))
 
                 // OAuth2
                 .and().oauth2Login()
                     .userInfoEndpoint()
-                    .userService(customOAuth2UserService);
+                    .userService(customOAuth2UserService)
+                .and().successHandler(customOAuth2AuthenticationHandler)*/;
+
 
 
 

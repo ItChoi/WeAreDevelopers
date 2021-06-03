@@ -6,11 +6,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum UserAuthority {
-    SUPERVISOR("최고 관리자", "supervisor", "ROLE_SUPERVISOR"),
-    MANAGER("관리자", "manager", "ROLE_MANAGER"),
-    USER("사용자", "user", "ROLE_USER"),
-    ANONYMOUS("익명", "anonymous", "ROLE_ANONYMOUS"),
-    TEST("테스트 계정", "test", "ROLE_TEST");
+    SUPERVISOR("최고 관리자", "SUPERVISOR", "ROLE_SUPERVISOR"),
+    MANAGER("관리자", "MANAGER", "ROLE_MANAGER"),
+    USER("사용자", "USER", "ROLE_USER"),
+    ANONYMOUS("익명", "ANONYMOUS", "ROLE_ANONYMOUS"),
+    TEST("테스트 계정", "TEST", "ROLE_TEST");
 
     private final String codeName;
     private final String code;
