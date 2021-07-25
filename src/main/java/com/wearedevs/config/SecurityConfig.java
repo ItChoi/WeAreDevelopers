@@ -37,12 +37,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
+                getAnyMatchersForWebSecurity()
+        );
+    }
+
+    private String[] getAnyMatchersForWebSecurity() {
+        return new String[] {
                 "/css/**",
                 "/js/**",
                 "/img/**",
                 "/h2-console/**",
-                "favicon.ico"
-        );
+                "favicon.ico"};
     }
 
     @Override
@@ -50,8 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.
                 authorizeRequests()
                 .antMatchers(
-                        "/api/login", "/api/authenticate",
-                        "/front/user/login"
+                        getAnyMatchersForHttpSecurity()
                 ).permitAll()
                 /*.antMatchers(
                         "/api/user/**"
@@ -74,10 +78,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 세션 사용 안하기 때문에 STATELESS로 설정
                 .and().sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                /*
-                .and().formLogin()
-                .loginPage("/front/user/login")
-                // 커스텀 filter를 추가
+
+                /*// 커스텀 filter를 추가
                 .and().apply(new JwtSecurityConfig(tokenProvider))
 
                 // OAuth2
@@ -85,14 +87,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .userInfoEndpoint()
                     .userService(customOAuth2UserService)
                 .and().successHandler(customOAuth2AuthenticationHandler)*/;
+    }
 
-
-
-
+    private String[] getAnyMatchersForHttpSecurity() {
+        return new String[] {
+                "/api/login", "/api/authenticate",
+                "/front/user/login"};
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
+
 }

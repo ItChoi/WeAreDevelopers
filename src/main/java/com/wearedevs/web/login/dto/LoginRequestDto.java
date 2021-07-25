@@ -13,6 +13,10 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 public class LoginRequestDto {
+    /**
+     * 1. UsernamePasswordAuthentication 방식
+     * 2. api 호출 방식 JWT (추후 적용)
+     */
     @NotEmpty
     @Size(min = 3, max = 20)
     private String username;

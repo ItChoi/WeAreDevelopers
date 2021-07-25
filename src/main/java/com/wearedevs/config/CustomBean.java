@@ -14,12 +14,12 @@ import javax.persistence.EntityManager;
 @Configuration
 public class CustomBean {
     // querydsl
-    private final EntityManager em;
+    /*private final EntityManager em;
 
     @Bean
     public JPAQueryFactory jpaQueryFactory() {
         return new JPAQueryFactory(em);
-    }
+    }*/
 
     @Bean
     public ModelMapper modelMapper() {
