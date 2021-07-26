@@ -1,6 +1,7 @@
 package com.wearedevs.api.login;
 
 import com.wearedevs.web.login.dto.LoginRequestDto;
+import com.wearedevs.web.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class LoginApiController {
+    private final LoginService loginService;
 
     @PostMapping("/api/login")
     public void login(LoginRequestDto requestDto, BindingResult result) {

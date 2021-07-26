@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 getAnyMatchersForWebSecurity()
         );
     }
-
     private String[] getAnyMatchersForWebSecurity() {
         return new String[] {
                 "/css/**",
