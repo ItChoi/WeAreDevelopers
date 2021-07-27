@@ -33,11 +33,13 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        CshUser findCshUser = userRepository.findByLoginId(username).orElse(null);
-        if (findCshUser == null) throw new UsernameNotFoundException(username + "가 존재하지 않습니다.");
+        CshUser findCshUser = userRepository.findByLoginId(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + "가 존재하지 않습니다."));
 
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(findCshUser.getUserRole().getAuthority().getCode()));
+        authorities.add(
+                new SimpleGrantedAuthority(findCshUser.getUserRole().getAuthority().getCode())
+        );
 
         return new User(username, findCshUser.getPassword(), authorities);
     }

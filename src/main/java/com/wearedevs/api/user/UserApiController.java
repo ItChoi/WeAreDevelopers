@@ -39,7 +39,12 @@ public class UserApiController {
 
     @GetMapping(value = "/api/user/{userId}")
     public ResponseEntity<UserDetailInfoResponseDto> userDetail(@PathVariable Long userId) {
-        UserDetailInfoResponseDto responseDto = userService.findUserDetailInfo(userId);
+        UserDetailInfoResponseDto responseDto = null;
+        try {
+            responseDto = userService.findUserDetailInfo(userId);
+        } catch (Exception e) {
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

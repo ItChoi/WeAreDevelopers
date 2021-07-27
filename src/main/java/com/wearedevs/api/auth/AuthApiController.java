@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RestController
 public class AuthApiController {
-    private final AuthService authService;
+    /*private final AuthService authService;
 
     @PostMapping("/api/authenticate")
     public ResponseEntity<TokenResponseDto> authorize(@Valid @RequestBody LoginRequestDto loginRequestDto) {
@@ -28,6 +28,6 @@ public class AuthApiController {
         }
 
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+    }*/
 
 }

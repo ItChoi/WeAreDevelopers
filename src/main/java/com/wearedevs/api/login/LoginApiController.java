@@ -1,15 +1,16 @@
 package com.wearedevs.api.login;
 
 import com.wearedevs.web.login.dto.LoginRequestDto;
+import com.wearedevs.web.login.dto.LoginResponseDto;
 import com.wearedevs.web.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,12 +19,12 @@ public class LoginApiController {
     private final LoginService loginService;
 
     @PostMapping("/api/login")
-    public void login(LoginRequestDto requestDto, BindingResult result) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto, BindingResult result, HttpServletRequest request) {
         // TODO: result 처리하기.
-        log.info("TEST");
+        loginService.changeLoginApproachKinds(requestDto, request);
+        LoginResponseDto test = loginService.loginProcess(requestDto);
 
-
-
+        return new ResponseEntity<>(test, HttpStatus.OK);
     }
 
 

@@ -28,6 +28,8 @@ public class LoginRequestDto {
 
     private String email;
     private LoginType loginType;
+    // UsernamePwAuth || Jwt
+    private LoginApproachKinds loginApproachKinds;
 
     @Builder
     public LoginRequestDto(String username, String password, String email, LoginType loginType) {

@@ -1,10 +1,11 @@
-package com.wearedevs.config;
+package com.wearedevs.config.security;
 
 import com.wearedevs.common.enumeration.user.UserAuthority;
 import com.wearedevs.common.exception.jwt.CustomOAuth2AuthenticationHandler;
 import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
 import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
 import com.wearedevs.common.utils.jwt.TokenProvider;
+import com.wearedevs.config.security.provider.CustomProviderImpl;
 import com.wearedevs.web.oauth.service.CustomOAuth2UserService;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,18 +27,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final CustomProviderImpl customProvider;
+
     // JWT
-    private final TokenProvider tokenProvider;
+    /*private final TokenProvider tokenProvider;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final CustomOAuth2AuthenticationHandler customOAuth2AuthenticationHandler;
+    private final CustomOAuth2AuthenticationHandler customOAuth2AuthenticationHandler;*/
     // OAuth2
-    private final CustomOAuth2UserService customOAuth2UserService;
+    //private final CustomOAuth2UserService customOAuth2UserService;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
-                getAnyMatchersForWebSecurity()
+                //getAnyMatchersForWebSecurity()
+                "/css/**",
+                "/js/**",
+                "/img/**",
+                "/h2-console/**",
+                "favicon.ico"
         );
     }
     private String[] getAnyMatchersForWebSecurity() {
@@ -54,7 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.
                 authorizeRequests()
                 .antMatchers(
-                        getAnyMatchersForHttpSecurity()
+                        //getAnyMatchersForHttpSecurity()
+                        "/api/login", "/api/authenticate",
+                        "/front/user/login"
                 ).permitAll()
                 /*.antMatchers(
                         "/api/user/**"
@@ -65,12 +75,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf()
                     .disable()
 
-                .exceptionHandling()
+                /*.exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                    .accessDeniedHandler(jwtAccessDeniedHandler)*/
 
                 // H2 console을 위한 설정
-                .and().headers()
+                .headers()
                     .frameOptions()
                     .sameOrigin()
 
@@ -96,7 +106,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
+            .and().authenticationProvider(customProvider);
     }
 
 }
