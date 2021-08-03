@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,10 +20,11 @@ public class LoginApiController {
     private final LoginService loginService;
 
     @PostMapping("/api/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto, BindingResult result, HttpServletRequest request) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto, BindingResult result,
+                                                  HttpServletRequest req, HttpServletResponse res) throws Exception {
         // TODO: result 처리하기.
-        loginService.changeLoginApproachKinds(requestDto, request);
-        LoginResponseDto test = loginService.loginProcess(requestDto);
+        loginService.changeLoginApproachKinds(requestDto, req);
+        LoginResponseDto test = loginService.loginProcess(requestDto, req, res);
 
         return new ResponseEntity<>(test, HttpStatus.OK);
     }

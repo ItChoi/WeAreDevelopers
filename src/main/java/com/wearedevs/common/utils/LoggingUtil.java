@@ -6,7 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
 @Slf4j
-public class LoggingUtils {
+public class LoggingUtil {
 
     public static void validBindingResult(BindingResult bindingResult) {
         for (ObjectError error : bindingResult.getAllErrors()) {

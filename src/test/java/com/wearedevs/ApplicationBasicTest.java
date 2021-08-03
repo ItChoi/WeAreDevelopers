@@ -39,11 +39,8 @@ public class ApplicationBasicTest {
         assertThrows(NoSuchElementException.class, () -> {
             Optional.ofNullable(test1).get().get();
         });
-
-
-
-
     }
+
 
 
 }

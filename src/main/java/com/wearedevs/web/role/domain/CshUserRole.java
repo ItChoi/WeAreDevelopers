@@ -1,7 +1,8 @@
-package com.wearedevs.web.user.domain;
+package com.wearedevs.web.role.domain;
 
 import com.wearedevs.common.domain.BaseDateTimeEntity;
 import com.wearedevs.common.enumeration.user.UserAuthority;
+import com.wearedevs.web.user.domain.CshUser;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -21,7 +22,7 @@ import java.io.Serializable;
 @ApiModel("사용자 권한 정보")
 @Entity
 @Table(name = "CSH_USER_ROLE")
-public class UserRole extends BaseDateTimeEntity implements Serializable {
+public class CshUserRole extends BaseDateTimeEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,7 +38,7 @@ public class UserRole extends BaseDateTimeEntity implements Serializable {
     /**
      * 사용자 고유 번호
      */
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @ApiModelProperty("사용자 고유 번호")
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private CshUser cshUser;
@@ -51,7 +52,7 @@ public class UserRole extends BaseDateTimeEntity implements Serializable {
     private UserAuthority authority;
 
     @Builder
-    public UserRole(Long id, CshUser cshUser, UserAuthority authority) {
+    public CshUserRole(Long id, CshUser cshUser, UserAuthority authority) {
         this.id = id;
         this.cshUser = cshUser;
         this.authority = authority;

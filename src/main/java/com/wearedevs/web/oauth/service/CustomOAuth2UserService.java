@@ -51,7 +51,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         SecurityContextHolder.getContext().setAuthentication(tokenProvider.getAuthentication(oauth2Token));*/
 
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority(targetUser.getUserRole().getAuthority().getCode())),
+                Collections.singleton(new SimpleGrantedAuthority(targetUser.getCshUserRole().getAuthority().getCode())),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey()
         );

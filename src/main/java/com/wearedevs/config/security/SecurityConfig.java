@@ -71,6 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).hasAnyRole(
                         UserAuthority.SUPERVISOR.getCode()
                 )*/
+                .and().formLogin()
 
                 .and().csrf()
                     .disable()

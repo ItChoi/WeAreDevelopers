@@ -1,15 +1,17 @@
 package com.wearedevs.web.user.domain;
 
 import com.wearedevs.common.domain.BaseDateTimeEntity;
-import com.wearedevs.common.enumeration.user.LoginType;
-import com.wearedevs.common.enumeration.user.UserActiveStatus;
+import com.wearedevs.web.role.domain.CshUserRole;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 사용자 정보
@@ -19,109 +21,65 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @ApiModel("사용자 정보")
-@Table(name = "csh_user")
+@Table(name = "CSH_USER")
 public class CshUser extends BaseDateTimeEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 사용자 고유 번호
-     */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @ApiModelProperty("사용자 고유 번호")
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    /**
-     * 로그인 아이디
-     */
-    @Column(name = "LOGIN_ID")
     @ApiModelProperty("로그인 아이디")
+    @Column(name = "LOGIN_ID")
     private String loginId;
 
-    /**
-     * 비밀번호
-     */
     @ApiModelProperty("비밀번호")
     @Column(name = "PASSWORD")
     private String password;
 
-    /**
-     * 이름
-     */
-    @Column(name = "NAME")
+    @ApiModelProperty("사용자 별명")
+    @Column(name = "NICKNAME")
+    private String nickname;
+
     @ApiModelProperty("이름")
+    @Column(name = "NAME")
     private String name;
 
-    /**
-     * 이메일
-     */
-    @Column(name = "EMAIL")
     @ApiModelProperty("이메일")
+    @Column(name = "EMAIL")
     private String email;
 
-    /**
-     * 프로필 사진
-     */
-    @ApiModelProperty("프로필 사진")
-    @Column(name = "PROFILE_IMAGE_NAME")
-    private String profileImageName;
+    @ApiModelProperty("핸드폰 번호")
+    @Column(name = "PHONE_NUMBER")
+    private String phoneNumber;
 
-    /**
-     * 썸네일 프로필 사진
-     */
+    @ApiModelProperty("프로필 사진 경로")
+    @Column(name = "PROFILE_IMAGE_PATH")
+    private String profileImagePath;
+
     @ApiModelProperty("썸네일 프로필 사진")
-    @Column(name = "PROFILE_THUMBNAIL_IMAGE_NAME")
-    private String profileThumbnailImageName;
+    @Column(name = "PROFILE_THUMBNAIL_IMAGE_PATH")
+    private String profileThumbnailImagePath;
 
-    /**
-     * 사용자 로그인 타입 (kakao, google, naver, ...)
-     */
-    @Enumerated(EnumType.STRING)
-    @Column(name = "LOGIN_TYPE")
-    @ApiModelProperty("사용자 로그인 타입 (kakao, google, naver, ...)")
-    private LoginType loginType;
+    @ApiModelProperty("성별")
+    @Column(name = "GENDER")
+    private String gender;
 
-    /**
-     * 사용자 활동 상태
-     */
-    @Enumerated(EnumType.STRING)
-    @ApiModelProperty("사용자 활동 상태")
-    @Column(name = "USER_ACTIVE_STATUS")
-    private UserActiveStatus userActiveStatus;
+    @ApiModelProperty("출생연도")
+    @Column(name = "BIRTHDAY")
+    private String birthday;
 
-    /**
-     * 마지막 로그인 날짜
-     */
-    @ApiModelProperty("마지막 로그인 날짜")
-    @Column(name = "LAST_LOGIN_DATE")
-    private LocalDateTime lastLoginDate;
+    @ApiModelProperty("사용자 상세")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cshUser", cascade = CascadeType.ALL)
+    private CshUserDetail cshUserDetail;
 
-    @OneToOne(mappedBy = "cshUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private UserInfo userInfo;
+    @ApiModelProperty("사용자 권한")
+    @OneToMany(mappedBy = "cshUser", cascade = CascadeType.ALL)
+    private List<CshUserRole> cshUserRole = new ArrayList<>();
 
-    @OneToOne(mappedBy = "cshUser", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private UserRole userRole;
-
-
-
-    @Builder
-    public CshUser(String loginId, String password, String name, String email, String profileImageName, LoginType loginType, UserActiveStatus userActiveStatus, LocalDateTime lastLoginDate, UserInfo userInfo, UserRole userRole) {
-        this.loginId = loginId;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-        this.profileImageName = profileImageName;
-        this.loginType = loginType;
-        this.userActiveStatus = userActiveStatus;
-        this.lastLoginDate = lastLoginDate;
-        this.userInfo = userInfo;
-        this.userRole = userRole;
-    }
-
-
-
-
+    //TODO 계정 정보 연관 관계 매핑
 
 
 }

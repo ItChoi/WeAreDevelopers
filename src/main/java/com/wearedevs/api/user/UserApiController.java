@@ -1,6 +1,6 @@
 package com.wearedevs.api.user;
 
-import com.wearedevs.common.utils.LoggingUtils;
+import com.wearedevs.common.utils.LoggingUtil;
 import com.wearedevs.web.user.dto.UserDetailInfoResponseDto;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.service.UserService;
@@ -26,7 +26,7 @@ public class UserApiController {
         HttpStatus httpStatus = HttpStatus.OK;
         try {
             if (bindingResult.hasErrors() || (userId = userService.createUser(requestDto)) == null) {
-                LoggingUtils.validBindingResult(bindingResult);
+                LoggingUtil.validBindingResult(bindingResult);
                 httpStatus = HttpStatus.BAD_REQUEST;
             }
         } catch (Exception e) {
