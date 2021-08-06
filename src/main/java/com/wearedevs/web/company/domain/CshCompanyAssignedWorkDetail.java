@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @ApiModel("회사 상세")
-@Table(name = "CSH_USER_CAREER_DETAIL_INFO")
-public class CshCompanyDetail extends BaseDateTimeEntity implements Serializable {
+@Table(name = "CSH_COMPANY_ASSIGNED_WORK_DETAIL")
+public class CshCompanyAssignedWorkDetail extends BaseDateTimeEntity implements Serializable {
     @ApiModelProperty("회사 상세 고유 번호")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

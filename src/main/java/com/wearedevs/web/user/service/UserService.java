@@ -27,8 +27,8 @@ import java.util.List;
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
+    //private final PasswordEncoder passwordEncoder;
+    //private final ModelMapper modelMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -44,12 +44,12 @@ public class UserService implements UserDetailsService {
         });
 
         // TODO: 값 제대로 들어오는지 테스트 필요
-        UserDto tempUserDto = modelMapper.map(findCshUser, UserDto.class);
-        tempUserDto.setAuthorities(authorities);
-        SecurityUserDto securityUserDto = modelMapper.map(tempUserDto, SecurityUserDto.class);
+        /*UserDto tempUserDto = modelMapper.map(findCshUser, UserDto.class);
+        tempUserDto.setAuthorities(authorities);*/
 
         //return new User(username, findCshUser.getPassword(), authorities);
-        return securityUserDto;
+        //return modelMapper.map(tempUserDto, SecurityUserDto.class);
+        return null;
     }
 
     /*@Transactional

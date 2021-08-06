@@ -1,7 +1,7 @@
 package com.wearedevs.web.career.domain;
 
 import com.wearedevs.common.domain.BaseDateTimeEntity;
-import com.wearedevs.web.company.domain.CshCompanyDetail;
+import com.wearedevs.web.company.domain.CshCompanyAssignedWorkDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -55,6 +55,6 @@ public class CshUserCareerDetailInfo extends BaseDateTimeEntity implements Seria
 
     @ApiModelProperty("회사 상세")
     @OneToMany(mappedBy = "cshUserCareerDetailInfo", cascade = CascadeType.ALL)
-    private List<CshCompanyDetail> cshCompanyDetailList = new ArrayList<>();
+    private List<CshCompanyAssignedWorkDetail> cshCompanyAssignedWorkDetailList = new ArrayList<>();
 
 }

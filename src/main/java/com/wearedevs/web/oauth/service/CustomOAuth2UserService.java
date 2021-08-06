@@ -47,18 +47,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         CshUser targetUser = changeUser(attributes, loginTypeCode);
 
         httpSession.setAttribute("user", SessionUser.builder().user(targetUser).build());
-        /*String oauth2Token = (String) userRequest.getAdditionalParameters().get("id_token");
-        SecurityContextHolder.getContext().setAuthentication(tokenProvider.getAuthentication(oauth2Token));*/
 
+        /* TODO 임시 주석
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(targetUser.getCshUserRole().getAuthority().getCode())),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey()
-        );
+        );*/
+        return null;
     }
 
     @Transactional
     public CshUser changeUser(OAuth2Attributes attributes, LoginType loginType) {
+        /* 임시 주석
         CshUser findUser = userRepository.findByEmailAndLoginType(attributes.getEmail(), loginType).orElse(null);
         if (findUser == null) {
             CshUser cshUser = userService.builderCshUserByRequestDto(settingUserRegisterRequestDto(attributes, loginType));
@@ -68,9 +69,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
 
         findUser.setName(attributes.getName());
-        findUser.setProfileImageName(attributes.getPicture());
+        findUser.setProfileImageName(attributes.getPicture()); 임시 주석
 
-        return findUser;
+        return findUser;*/
+        return null;
     }
 
     private UserRegisterRequestDto settingUserRegisterRequestDto(OAuth2Attributes attributes, LoginType loginType) {

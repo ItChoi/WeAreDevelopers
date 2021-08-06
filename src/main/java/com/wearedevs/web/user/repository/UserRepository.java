@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<CshUser, Long>, JpaSpecificationExecutor<CshUser> {
     Optional<CshUser> findByLoginId(String username);
     boolean existsByLoginId(String loginId);
-    Optional<CshUser> findByEmailAndLoginType(String email, LoginType loginType);
+    //Optional<CshUser> findByEmailAndLoginType(String email, LoginType loginType); // TODO: 임시 주석
 }

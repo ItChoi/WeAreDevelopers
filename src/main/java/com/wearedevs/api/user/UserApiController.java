@@ -25,10 +25,11 @@ public class UserApiController {
         Long userId = null;
         HttpStatus httpStatus = HttpStatus.OK;
         try {
+            /* 임시 주석
             if (bindingResult.hasErrors() || (userId = userService.createUser(requestDto)) == null) {
                 LoggingUtil.validBindingResult(bindingResult);
                 httpStatus = HttpStatus.BAD_REQUEST;
-            }
+            }*/
         } catch (Exception e) {
             log.error("ERROR: {}", e);
             httpStatus = HttpStatus.BAD_REQUEST;
@@ -41,7 +42,8 @@ public class UserApiController {
     public ResponseEntity<UserDetailInfoResponseDto> userDetail(@PathVariable Long userId) {
         UserDetailInfoResponseDto responseDto = null;
         try {
-            responseDto = userService.findUserDetailInfo(userId);
+
+            //responseDto = userService.findUserDetailInfo(userId); 임시 주석
         } catch (Exception e) {
             return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
         }

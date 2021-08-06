@@ -20,7 +20,8 @@ public class SessionUser implements Serializable {
     public SessionUser(CshUser user) {
         this.name = user.getName();
         this.email = user.getEmail();
-        this.picture = user.getProfileImageName();
-        this.loginType = user.getLoginType();
+        // TODO 세션 객체 필드 변경하기
+        /*this.picture = user.getProfileImageName();
+        this.loginType = user.getLoginType();*/
     }
 }

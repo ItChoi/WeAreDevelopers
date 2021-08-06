@@ -1,15 +1,11 @@
 package com.wearedevs.config.security;
 
-import com.wearedevs.common.enumeration.user.UserAuthority;
-import com.wearedevs.common.exception.jwt.CustomOAuth2AuthenticationHandler;
-import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
-import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
-import com.wearedevs.common.utils.jwt.TokenProvider;
-import com.wearedevs.config.security.provider.CustomProviderImpl;
-import com.wearedevs.web.oauth.service.CustomOAuth2UserService;
+import com.wearedevs.config.security.provider.CustomAuthProvider;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +23,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final CustomProviderImpl customProvider;
+    private final CustomAuthProvider customProvider;
+//    private final AuthenticationProvider customProvider;
+    //private final
+
 
     // JWT
     /*private final TokenProvider tokenProvider;
@@ -71,8 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).hasAnyRole(
                         UserAuthority.SUPERVISOR.getCode()
                 )*/
-                .and().formLogin()
-
+                //.and().formLogin()
                 .and().csrf()
                     .disable()
 
@@ -108,7 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
-            .and().authenticationProvider(customProvider);
+                .and().authenticationProvider(customProvider);
     }
 
 }

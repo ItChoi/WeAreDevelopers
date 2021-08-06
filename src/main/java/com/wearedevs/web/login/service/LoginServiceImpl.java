@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -27,9 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class LoginServiceImpl implements LoginService {
     private final UserService userService;
-    private final AuthenticationProvider provider;
+    //private final AuthenticationProvider provider;
     private final UserRepository userRepository;
-    SessionAuthenticationStrategy sessionStrategy;
+    //SessionAuthenticationStrategy sessionStrategy;
 
     private boolean isNotEmptyUsernameOrPassword(String username, String password) {
         return StringUtils.hasText(username) && StringUtils.hasText(password);
@@ -45,12 +46,10 @@ public class LoginServiceImpl implements LoginService {
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, inputPassword);
         // setDetails -> ip & cache 세팅
-        Authentication authenticate = provider.authenticate(authToken);
+        //Authentication authenticate = provider.authenticate(authToken);
 
-        sessionStrategy.onAuthentication(authenticate, req, res);
-        /*if (userService.existsUserByUsername(username)) {
-
-        }*/
+        //sessionStrategy.onAuthentication(authenticate, req, res);
+        //SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         //if (isAvailableUsernameAndPassword(username, inputPassword)) throw new UserNotFoundException("비밀번호를 정확히 입력해주세요.");
         /**
