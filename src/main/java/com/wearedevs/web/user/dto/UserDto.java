@@ -1,5 +1,6 @@
 package com.wearedevs.web.user.dto;
 
+import com.wearedevs.web.role.dto.UserRoleDto;
 import com.wearedevs.web.user.domain.CshUserDetail;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +26,9 @@ public class UserDto {
     private String profileThumbnailImagePath;
     private String gender;
     private String birthday;
-    private CshUserDetail cshUserDetail;
-    private List<UserDto> cshUserRole = new ArrayList<>();
+
+    private UserDetailDto userDetail;
+    private List<UserRoleDto> userRoleList = new ArrayList<>();
 
     // 커스텀 필드
     List<GrantedAuthority> authorities = new ArrayList<>();

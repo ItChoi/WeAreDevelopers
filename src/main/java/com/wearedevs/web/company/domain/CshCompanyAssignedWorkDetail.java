@@ -19,19 +19,19 @@ import java.time.LocalDateTime;
 @Entity
 @ApiModel("회사 상세")
 @Table(name = "CSH_COMPANY_ASSIGNED_WORK_DETAIL")
-public class CshCompanyAssignedWorkDetail extends BaseDateTimeEntity implements Serializable {
+public class CshCompanyAssignedWorkDetail extends BaseDateTimeEntity {
     @ApiModelProperty("회사 상세 고유 번호")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "ID", nullable = false)
     private Long id;
 
-    @ApiModelProperty("사용자 경력 정보")
+    @ApiModelProperty("사용자 경력 상세 정보")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_CAREER_DETAIL_INFO_ID", referencedColumnName = "ID")
     private CshUserCareerDetailInfo cshUserCareerDetailInfo;
 
-    @ApiModelProperty("담당 부서")
+    @ApiModelProperty("개발한 기능 제목")
     @Column(name = "FEATURE_DEVELOP_TITLE")
     private String featureDevelopTitle;
 

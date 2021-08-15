@@ -14,11 +14,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 
 // prePostEnabled를 메소드 단위로 추가하기 위하여 추가
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
+//@EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
@@ -70,7 +72,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).hasAnyRole(
                         UserAuthority.SUPERVISOR.getCode()
                 )*/
-                //.and().formLogin()
+                .and().formLogin() // 디폴트 시큐리티 프로세스 분석용
                 .and().csrf()
                     .disable()
 
@@ -84,8 +86,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sameOrigin()
 
                 // 세션 사용 안하기 때문에 STATELESS로 설정
+                /*.and().sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/
                 .and().sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionAuthenticationStrategy(springSecuritySession())
 
                 /*// 커스텀 filter를 추가
                 .and().apply(new JwtSecurityConfig(tokenProvider))
@@ -97,6 +101,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().successHandler(customOAuth2AuthenticationHandler)*/;
     }
 
+    @Bean
+    public SessionFixationProtectionStrategy springSecuritySession() {
+        return new SessionFixationProtectionStrategy();
+    }
+
     private String[] getAnyMatchersForHttpSecurity() {
         return new String[] {
                 "/api/login", "/api/authenticate",
@@ -105,8 +114,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
-                .and().authenticationProvider(customProvider);
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
+                // TODO: Default Spring Security 분석중 .and().authenticationProvider(customProvider);
     }
 
 }

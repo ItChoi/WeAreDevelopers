@@ -3,6 +3,7 @@ package com.wearedevs;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.wearedevs.web.user.domain.CshUser;
 import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
@@ -40,7 +41,4 @@ public class ApplicationBasicTest {
             Optional.ofNullable(test1).get().get();
         });
     }
-
-
-
 }

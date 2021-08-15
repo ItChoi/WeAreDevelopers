@@ -17,8 +17,7 @@ import java.io.Serializable;
 @Setter
 @Entity
 @Table(name = "CSH_HASH_TAG")
-public class CshHashTag extends BaseDateTimeEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class CshHashTag extends BaseDateTimeEntity {
 
     @ApiModelProperty("사용자 정보 고유 번호")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

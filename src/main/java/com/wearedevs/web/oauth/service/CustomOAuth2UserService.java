@@ -75,7 +75,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         return null;
     }
 
-    private UserRegisterRequestDto settingUserRegisterRequestDto(OAuth2Attributes attributes, LoginType loginType) {
+    /*private UserRegisterRequestDto settingUserRegisterRequestDto(OAuth2Attributes attributes, LoginType loginType) {
         return UserRegisterRequestDto.builder()
                 .name(attributes.getName())
                 .email(attributes.getEmail())
@@ -83,5 +83,5 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .loginType(loginType)
                 .authority(UserAuthority.USER)
                 .build();
-    }
+    }*/
 }

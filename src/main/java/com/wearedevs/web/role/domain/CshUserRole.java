@@ -22,30 +22,19 @@ import java.io.Serializable;
 @ApiModel("사용자 권한 정보")
 @Entity
 @Table(name = "CSH_USER_ROLE")
-public class CshUserRole extends BaseDateTimeEntity implements Serializable {
+public class CshUserRole extends BaseDateTimeEntity {
 
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 유저 권한 고유 번호
-     */
     @Id
     @ApiModelProperty("유저 권한 고유 번호")
     @Column(name = "ID", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /**
-     * 사용자 고유 번호
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @ApiModelProperty("사용자 고유 번호")
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private CshUser cshUser;
 
-    /**
-     * 권한 이름
-     */
     @Enumerated(EnumType.STRING)
     @ApiModelProperty("권한 이름")
     @Column(name = "AUTHORITY")
@@ -54,7 +43,6 @@ public class CshUserRole extends BaseDateTimeEntity implements Serializable {
     @Builder
     public CshUserRole(Long id, CshUser cshUser, UserAuthority authority) {
         this.id = id;
-        this.cshUser = cshUser;
         this.authority = authority;
     }
 }

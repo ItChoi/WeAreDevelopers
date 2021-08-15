@@ -1,6 +1,7 @@
 package com.wearedevs.web.career.domain;
 
 import com.wearedevs.common.domain.BaseDateTimeEntity;
+import com.wearedevs.common.enumeration.TwoAnswerType;
 import com.wearedevs.web.company.domain.CshCompanyAssignedWorkDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,7 +21,7 @@ import java.util.List;
 @Entity
 @ApiModel("사용자 경력 상세 정보")
 @Table(name = "CSH_USER_CAREER_DETAIL_INFO")
-public class CshUserCareerDetailInfo extends BaseDateTimeEntity implements Serializable {
+public class CshUserCareerDetailInfo extends BaseDateTimeEntity {
 
     @ApiModelProperty("사용자 정보 고유 번호")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,12 +35,22 @@ public class CshUserCareerDetailInfo extends BaseDateTimeEntity implements Seria
     private CshUserCareerInfo cshUserCareerInfo;
 
     @ApiModelProperty("현재 회사 여부")
-    @Column(name = "CURRENT_COMPANY_YN")
-    private String currentComapanyYn;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "CURRENT_COMPANY_TYPE")
+    private TwoAnswerType currentCompanyType;
+
+    @ApiModelProperty("대표 회사 여부")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "REPRESENTATIVE_COMPANY_TYPE")
+    private TwoAnswerType representativeCompanyType;
 
     @ApiModelProperty("회사명")
     @Column(name = "COMPANY_NAME")
-    private String careerDetailDisplay;
+    private String companyName;
+
+    @ApiModelProperty("직급")
+    @Column(name = "POSITION")
+    private String position;
 
     @ApiModelProperty("담당 부서")
     @Column(name = "DEPARTMENT")

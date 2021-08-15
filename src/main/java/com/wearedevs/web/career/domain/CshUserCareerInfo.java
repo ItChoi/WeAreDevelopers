@@ -21,7 +21,7 @@ import java.util.List;
 @Entity
 @ApiModel("사용자 경력 정보")
 @Table(name = "CSH_USER_CAREER_INFO")
-public class CshUserCareerInfo extends BaseDateTimeEntity implements Serializable {
+public class CshUserCareerInfo extends BaseDateTimeEntity {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("사용자 정보 고유 번호")
@@ -35,14 +35,13 @@ public class CshUserCareerInfo extends BaseDateTimeEntity implements Serializabl
     @JoinColumn(name = "USER_DETAIL_ID", referencedColumnName = "ID")
     private CshUserDetail cshUserDetail;
 
-
     @ApiModelProperty("경력 상태 존재 여부")
     @Column(name = "EXISTS_CAREER_DISPLAY")
     private String existsCareerDisplay;
+
     @ApiModelProperty("총 경력")
     @Column(name = "ALL_COMPANY_YEARS")
     private String allCompanyYears;
-
 
     @Enumerated(EnumType.STRING)
     @ApiModelProperty("재직상태 (취준, 재직, 이직 준비 등)")
@@ -53,7 +52,7 @@ public class CshUserCareerInfo extends BaseDateTimeEntity implements Serializabl
     @Column(name = "CAREER_DETAIL_DISPLAY")
     private String careerDetailDisplay;
 
-    @ApiModelProperty("현재 회사 공개 여부 (인증된 사용자만 노출 (인증 방식 - 이메일) / 재직 기간에 따라 '전', '현' 표시")
+    @ApiModelProperty("회사 이름 공개 여부 (인증된 사용자만 노출 (인증 방식 - 이메일?) / 재직 기간에 따라 '전', '현' 표시 / 현재 회사, 대표 회사 두 개 다 있는 경우 대표 회사를 보여준다.")
     @Column(name = "CURRENT_COMPANY_DISPLAY")
     private String currentCompanyDisplay;
 

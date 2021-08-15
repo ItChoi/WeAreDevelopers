@@ -4,12 +4,15 @@ package com.wearedevs.web.user.dto;
 import com.wearedevs.web.role.dto.UserRoleDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+//@Setter
 @Getter
 @NoArgsConstructor
 public class SecurityUserDto implements UserDetails {
@@ -22,11 +25,12 @@ public class SecurityUserDto implements UserDetails {
     private boolean enabled;
 
     // 스프링 시큐리티 필드
-    List<GrantedAuthority> authorities;
+    List<GrantedAuthority> authorities = new ArrayList<>();
 
     // 자체 필드
     private Long userId;
-    private String nicmname;
+    private String loginId;
+    private String nickname;
     private String name;
     private String email;
     private String phoneNumber;
@@ -34,8 +38,9 @@ public class SecurityUserDto implements UserDetails {
     private String profileThumbnailImagePath;
     private String gender;
     private String birthday;
-    private UserRoleDto cshUserRole;
 
+    private UserDetailDto userDetail;
+    private UserRoleDto userRoleList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -71,4 +76,6 @@ public class SecurityUserDto implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
+
+
 }

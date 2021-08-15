@@ -21,6 +21,7 @@ public class CustomBean {
         return new JPAQueryFactory(em);
     }*/
 
+    /* Setter 없이 mapping이 되긴 하는데 왜 이렇게 오래걸리나????
     @Bean
     public ModelMapper modelMapper() {
         ModelMapper modelMapper = new ModelMapper();
@@ -28,7 +29,12 @@ public class CustomBean {
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
                 .setFieldMatchingEnabled(true);
         return modelMapper;
+    }*/
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

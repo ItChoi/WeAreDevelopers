@@ -12,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
@@ -28,12 +29,12 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class LoginServiceImpl implements LoginService {
     private final UserService userService;
-    //private final AuthenticationProvider provider;
+    private final AuthenticationProvider authProvider;
     private final UserRepository userRepository;
-    //SessionAuthenticationStrategy sessionStrategy;
+    private final SessionAuthenticationStrategy sessionStrategy;
 
     private boolean isNotEmptyUsernameOrPassword(String username, String password) {
-        return StringUtils.hasText(username) && StringUtils.hasText(password);
+        return !StringUtils.hasText(username) || !StringUtils.hasText(password);
     }
 
 
@@ -45,40 +46,23 @@ public class LoginServiceImpl implements LoginService {
         if (isNotEmptyUsernameOrPassword(username, inputPassword)) throw new UserNotFoundException("계정 정보를 정확히 입력해주세요.");
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, inputPassword);
-        // setDetails -> ip & cache 세팅
-        //Authentication authenticate = provider.authenticate(authToken);
-
-        //sessionStrategy.onAuthentication(authenticate, req, res);
-        //SecurityContextHolder.getContext().setAuthentication(authenticate);
-
-        //if (isAvailableUsernameAndPassword(username, inputPassword)) throw new UserNotFoundException("비밀번호를 정확히 입력해주세요.");
         /**
-         * 계정 정보 검증
-         * 1. username 빈 값 체크 & 존재하는지 확인
-         * 2. 비밀번호 빈값 체크 & 계정 확인 (아이디 비밀번호 일치)
-         *
+         * setDetails -> ip & cache 세팅
+         * session -> 스프링 시큐리티는 프로세스 안에서 세션을 등록하여 사용하는데,
+         * 예를 들어 로그인만 하고 TFA 하지 않고 끈 경우, 로그인 페이지 왔을 때 세션 여부를 확인 후 TFA를 띄워주는 등의 동작이 필요
          */
+        Authentication authenticate = authProvider.authenticate(authToken);
 
 
-        // TODO: Error Handler 만들기
-        //UserDetails userDetails = null; // cache 있으면 가져오기 (?)
-        try {
-            //userDetails = userService.loadUserByUsername(username);
-            // 계정 자체 인증
-            //userService.beforeLoginUserAuthChecksByUsername(username);
-            //
-
-        } catch (Exception e) {
-            log.error("ERROR: {}", e.getMessage());
-            throw new BadCredentialsException(e.getMessage());
-        }
-
-
-        /*UsernamePasswordAuthenticationToken upat = new UsernamePasswordAuthenticationToken(username, inputPassword, userDetails.getAuthorities());
-        Authentication authenticate = provider.authenticate(upat);
-        SecurityContextHolder.getContext().setAuthentication(authenticate);*/
-
-
+        /**
+         * TODO List: 인증 성공 이후
+         * 1. 세션 등록
+         * 2. Security Context Auth 객체 등록
+         * 3. 리멤버미
+         * 4. Success Handler 호출 (필요가 있으려나?)
+         */
+        sessionStrategy.onAuthentication(authenticate, req, res);
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         // 인가
         return null;

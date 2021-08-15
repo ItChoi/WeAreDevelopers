@@ -1,4 +1,4 @@
-package com.wearedevs.web.auth;
+package com.wearedevs.web.auth.service;
 
 import com.wearedevs.common.utils.jwt.TokenProvider;
 import com.wearedevs.config.filter.JwtFilter;

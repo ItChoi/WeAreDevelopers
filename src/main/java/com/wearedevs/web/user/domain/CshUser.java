@@ -4,6 +4,7 @@ import com.wearedevs.common.domain.BaseDateTimeEntity;
 import com.wearedevs.web.role.domain.CshUserRole;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,8 +23,7 @@ import java.util.List;
 @Entity
 @ApiModel("사용자 정보")
 @Table(name = "CSH_USER")
-public class CshUser extends BaseDateTimeEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class CshUser extends BaseDateTimeEntity {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -73,13 +73,32 @@ public class CshUser extends BaseDateTimeEntity implements Serializable {
 
     @ApiModelProperty("사용자 상세")
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "cshUser", cascade = CascadeType.ALL)
-    private CshUserDetail cshUserDetail;
+    private CshUserDetail userDetail;
 
     @ApiModelProperty("사용자 권한")
     @OneToMany(mappedBy = "cshUser", cascade = CascadeType.ALL)
-    private List<CshUserRole> cshUserRole = new ArrayList<>();
+    private List<CshUserRole> userRoleList = new ArrayList<>();
 
-    //TODO 계정 정보 연관 관계 매핑
+    /**
+     * TODO:
+     * 1. 계정 정보 연관 관계 매핑
+     * 2. 비매너 지수 컬럼 추가
+     */
 
-
+    @Builder
+    public CshUser(Long id, String loginId, String password, String nickname, String name, String email, String phoneNumber, String profileImagePath, String profileThumbnailImagePath, String gender, String birthday, CshUserDetail userDetail, List<CshUserRole> userRoleList) {
+        this.id = id;
+        this.loginId = loginId;
+        this.password = password;
+        this.nickname = nickname;
+        this.name = name;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.profileImagePath = profileImagePath;
+        this.profileThumbnailImagePath = profileThumbnailImagePath;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.userDetail = userDetail;
+        this.userRoleList = userRoleList;
+    }
 }
