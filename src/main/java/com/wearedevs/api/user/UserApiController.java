@@ -1,6 +1,6 @@
 package com.wearedevs.api.user;
 
-import com.wearedevs.common.utils.LoggingUtils;
+import com.wearedevs.common.utils.LoggingUtil;
 import com.wearedevs.web.user.dto.UserDetailInfoResponseDto;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.service.UserService;
@@ -26,7 +26,7 @@ public class UserApiController {
         HttpStatus httpStatus = HttpStatus.OK;
         try {
             if (bindingResult.hasErrors() || (userId = userService.createUser(requestDto)) == null) {
-                LoggingUtils.validBindingResult(bindingResult);
+                LoggingUtil.validBindingResult(bindingResult);
                 httpStatus = HttpStatus.BAD_REQUEST;
             }
         } catch (Exception e) {
@@ -39,7 +39,12 @@ public class UserApiController {
 
     @GetMapping(value = "/api/user/{userId}")
     public ResponseEntity<UserDetailInfoResponseDto> userDetail(@PathVariable Long userId) {
-        UserDetailInfoResponseDto responseDto = userService.findUserDetailInfo(userId);
+        UserDetailInfoResponseDto responseDto = null;
+        try {
+            responseDto = userService.findUserDetailInfo(userId);
+        } catch (Exception e) {
+            return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }

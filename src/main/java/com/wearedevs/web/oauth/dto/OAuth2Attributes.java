@@ -1,10 +1,9 @@
 package com.wearedevs.web.oauth.dto;
 
 
-import com.wearedevs.common.enumeration.user.LoginType;
+import com.wearedevs.common.enumeration.user.LoginAccessType;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
@@ -32,17 +31,17 @@ public class OAuth2Attributes {
     public static OAuth2Attributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
         OAuth2Attributes oAuth2Attributes = new OAuth2Attributes();
 
-        if (registrationId.equals(LoginType.GOOGLE.getCode())) {
+        if (registrationId.equals(LoginAccessType.GOOGLE.getCode())) {
             oAuth2Attributes = ofGoogle(userNameAttributeName, attributes);
-        } else if (registrationId.equals(LoginType.NAVER.getCode())) {
+        } else if (registrationId.equals(LoginAccessType.NAVER.getCode())) {
 
-        } else if (registrationId.equals(LoginType.KAKAO.getCode())) {
+        } else if (registrationId.equals(LoginAccessType.KAKAO.getCode())) {
 
-        } else if (registrationId.equals(LoginType.GITHUB.getCode())) {
+        } else if (registrationId.equals(LoginAccessType.GITHUB.getCode())) {
 
-        } else if (registrationId.equals(LoginType.FACEBOOK.getCode())) {
+        } else if (registrationId.equals(LoginAccessType.FACEBOOK.getCode())) {
 
-        } else if (registrationId.equals(LoginType.INSTAGRAM.getCode())) {
+        } else if (registrationId.equals(LoginAccessType.INSTAGRAM.getCode())) {
 
         }
 

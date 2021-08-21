@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseDateTimeEntity {
     @CreatedBy
-    private Long createdUserId;
+    private Long createdUserId; // 생성자 USER_ID
     @CreatedDate
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate; // 생성일
     @CreatedBy
-    private Long updatedUserId;
+    private Long updatedUserId; // 수정자 USER_ID
     @CreatedDate
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedDate; // 수정일
 }

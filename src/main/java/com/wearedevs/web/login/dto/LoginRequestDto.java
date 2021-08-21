@@ -1,6 +1,6 @@
 package com.wearedevs.web.login.dto;
 
-import com.wearedevs.common.enumeration.user.LoginType;
+import com.wearedevs.common.enumeration.user.LoginAccessType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,13 +27,15 @@ public class LoginRequestDto {
     private String password;
 
     private String email;
-    private LoginType loginType;
+    private LoginAccessType loginAccessType;
+    // UsernamePwAuth || Jwt
+    private LoginApproachKinds loginApproachKinds;
 
     @Builder
-    public LoginRequestDto(String username, String password, String email, LoginType loginType) {
+    public LoginRequestDto(String username, String password, String email, LoginAccessType loginAccessType) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.loginType = loginType;
+        this.loginAccessType = loginAccessType;
     }
 }

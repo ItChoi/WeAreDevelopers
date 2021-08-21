@@ -1,4 +1,4 @@
-package com.wearedevs.web.auth;
+package com.wearedevs.web.auth.service;
 
 import com.wearedevs.common.dto.jwt.TokenResponseDto;
 import com.wearedevs.web.login.dto.LoginRequestDto;

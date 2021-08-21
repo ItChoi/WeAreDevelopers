@@ -1,7 +1,7 @@
 package com.wearedevs.config.filter;
 
 import com.wearedevs.common.dto.session.SessionUser;
-import com.wearedevs.common.enumeration.user.LoginType;
+import com.wearedevs.common.enumeration.user.LoginAccessType;
 import com.wearedevs.common.utils.jwt.TokenProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -71,8 +71,8 @@ public class JwtFilter extends GenericFilterBean {
     private boolean existsOAuth2Info(SessionUser findUserBySession) {
         if (findUserBySession == null) return false;
         String email = findUserBySession.getEmail();
-        LoginType loginType = findUserBySession.getLoginType();
+        LoginAccessType loginAccessType = findUserBySession.getLoginAccessType();
 
-        return StringUtils.hasText(email) && loginType != null;
+        return StringUtils.hasText(email) && loginAccessType != null;
     }
 }
