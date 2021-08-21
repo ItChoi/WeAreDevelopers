@@ -32,7 +32,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation 'org.modelmapper:modelmapper:2.4.0'
+    implementation 'org.modelmapper:modelmapper:2.4.4'
+//     mapstruct 적용 - lombok보다 아래에 있어야 한다.
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    implementation 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+
+
     implementation 'com.querydsl:querydsl-jpa'
     implementation 'com.querydsl:querydsl-apt'
 

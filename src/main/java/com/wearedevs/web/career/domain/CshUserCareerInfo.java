@@ -22,7 +22,6 @@ import java.util.List;
 @ApiModel("사용자 경력 정보")
 @Table(name = "CSH_USER_CAREER_INFO")
 public class CshUserCareerInfo extends BaseDateTimeEntity {
-    private static final long serialVersionUID = 1L;
 
     @ApiModelProperty("사용자 정보 고유 번호")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

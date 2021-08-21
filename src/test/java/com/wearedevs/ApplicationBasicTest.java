@@ -1,16 +1,19 @@
 package com.wearedevs;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import com.wearedevs.web.user.domain.CshUser;
+import com.wearedevs.common.enumeration.user.UserAuthority;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class ApplicationBasicTest {
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
+public class ApplicationBasicTest {
     @Test
     void 옵셔널_NULL_테스트1() {
         class Test123 {
@@ -40,5 +43,19 @@ public class ApplicationBasicTest {
         assertThrows(NoSuchElementException.class, () -> {
             Optional.ofNullable(test1).get().get();
         });
+    }
+
+    @Test
+    void 스트링_유틸_테스트() {
+        boolean b = StringUtils.hasText(null);
+        assertThat(b).isFalse();
+    }
+
+    @Test
+    void 서드파티_권한_생성_테스트() {
+        List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(UserAuthority.ANONYMOUS.getFullCode());
+        assertThat(authorityList).isNotNull();
+        assertEquals(1, authorityList.size());
+
     }
 }

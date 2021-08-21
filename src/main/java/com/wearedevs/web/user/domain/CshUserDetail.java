@@ -1,7 +1,7 @@
 package com.wearedevs.web.user.domain;
 
 import com.wearedevs.common.domain.BaseDateTimeEntity;
-import com.wearedevs.common.enumeration.user.LoginType;
+import com.wearedevs.common.enumeration.user.LoginAccessType;
 import com.wearedevs.common.enumeration.user.UserActiveStatus;
 import com.wearedevs.web.career.domain.CshUserCareerInfo;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -60,7 +59,7 @@ public class CshUserDetail extends BaseDateTimeEntity {
     @Enumerated(EnumType.STRING)
     @ApiModelProperty("사용자 로그인 타입(카카오, 네이버, 홈페이지, ...")
     @Column(name = "LOGIN_TYPE")
-    private LoginType loginType;
+    private LoginAccessType loginAccessType;
 
     @ApiModelProperty("마지막 로그인 날짜")
     @Column(name = "LAST_LOGIN_DATE")
@@ -75,14 +74,14 @@ public class CshUserDetail extends BaseDateTimeEntity {
     private CshUserCareerInfo cshUserCareerInfo;
 
     @Builder
-    public CshUserDetail(String introduce, String areaOne, String areaTwo, String areaThree, String searchAreaPermitScope, UserActiveStatus userActiveStatus, LoginType loginType, LocalDateTime lastLoginDate, String privacyInfoDisplay) {
+    public CshUserDetail(String introduce, String areaOne, String areaTwo, String areaThree, String searchAreaPermitScope, UserActiveStatus userActiveStatus, LoginAccessType loginAccessType, LocalDateTime lastLoginDate, String privacyInfoDisplay) {
         this.introduce = introduce;
         this.areaOne = areaOne;
         this.areaTwo = areaTwo;
         this.areaThree = areaThree;
         this.searchAreaPermitScope = searchAreaPermitScope;
         this.userActiveStatus = userActiveStatus;
-        this.loginType = loginType;
+        this.loginAccessType = loginAccessType;
         this.lastLoginDate = lastLoginDate;
         this.privacyInfoDisplay = privacyInfoDisplay;
     }

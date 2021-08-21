@@ -1,17 +1,24 @@
 package com.wearedevs.config.security.provider;
 
+import com.wearedevs.common.enumeration.user.UserAuthority;
 import com.wearedevs.web.user.service.UserService;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,27 +26,22 @@ import org.springframework.stereotype.Service;
 public class CustomAuthProvider implements AuthenticationProvider {
 //public class CustomAuthProvider extends DaoAuthenticationProvider {
     private final UserService userService;
+    private static final String ANONYMOUS_USER = "anonymousUser";
 
 
-    /*@Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        log.info("auth: " + authentication);
-        // TOOD: JWT & UsernamePwAuth 체크 로직 여기에 들어가야 하나?
-        // 캐시 확인 User 객체
-        // UserDetails user = 캐시 확인
-        // UsernameNotFoundException
-        //UserDetails user = userService.loadUserByUsername(authentication.getName());
-        return createSuccessAuthentication(null, authentication, null);
-    }
-
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
-    }*/
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         log.info("auth: " + authentication);
+        if (!supports(authentication.getClass())) {
+            // 익명 사용자 리턴 - 익명 사용자도 일부 사이트 사용가능하게 하기 위함
+            return new AnonymousAuthenticationToken(
+                    UserAuthority.ANONYMOUS.getCode(),
+                    ANONYMOUS_USER,
+                    AuthorityUtils.createAuthorityList(UserAuthority.ANONYMOUS.getFullCode())
+            );
+        }
+
         /** TODO List
          * 1. support를 통해 유효한 Token 종류인지 확인
          * 2. loadUserByUsername 호출
@@ -60,6 +62,16 @@ public class CustomAuthProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return false;
+        return isValidApplicationToken(authentication);
     }
+
+    private boolean isValidApplicationToken(Class<?> authentication) {
+        // TODO: 토큰 인스턴스 추가 될 때 허용 토큰 지정
+        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+    }
+
+    /*public void eraseCredentialsaaaa(Authentication authentication) {
+
+    }*/
+
 }

@@ -1,6 +1,6 @@
 package com.wearedevs.common.dto.session;
 
-import com.wearedevs.common.enumeration.user.LoginType;
+import com.wearedevs.common.enumeration.user.LoginAccessType;
 import com.wearedevs.web.user.domain.CshUser;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,7 @@ public class SessionUser implements Serializable {
     private String name;
     private String email;
     private String picture;
-    private LoginType loginType;
+    private LoginAccessType loginAccessType;
 
     @Builder
     public SessionUser(CshUser user) {
@@ -22,6 +22,6 @@ public class SessionUser implements Serializable {
         this.email = user.getEmail();
         // TODO 세션 객체 필드 변경하기
         /*this.picture = user.getProfileImageName();
-        this.loginType = user.getLoginType();*/
+        this.loginAccessType = user.getLoginAccessType();*/
     }
 }

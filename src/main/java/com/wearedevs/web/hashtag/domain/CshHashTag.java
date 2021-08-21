@@ -2,7 +2,6 @@ package com.wearedevs.web.hashtag.domain;
 
 import com.wearedevs.common.domain.BaseDateTimeEntity;
 import com.wearedevs.common.enumeration.hashtag.HashTagType;
-import com.wearedevs.common.enumeration.user.LoginType;
 import com.wearedevs.web.user.domain.CshUser;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -10,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @NoArgsConstructor
 @Getter

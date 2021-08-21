@@ -7,6 +7,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public interface LoginService {
-    LoginResponseDto loginProcess(LoginRequestDto requestDto, HttpServletRequest req, HttpServletResponse res) throws Exception;
+    boolean loginProcess(LoginRequestDto requestDto, HttpServletRequest req, HttpServletResponse res) throws Exception;
     void changeLoginApproachKinds(LoginRequestDto requestDto, HttpServletRequest request);
 }

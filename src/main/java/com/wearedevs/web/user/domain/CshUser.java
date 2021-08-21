@@ -17,11 +17,11 @@ import java.util.List;
 /**
  * 사용자 정보
  */
+@ApiModel("사용자 정보")
 @NoArgsConstructor
 @Getter
 @Setter
 @Entity
-@ApiModel("사용자 정보")
 @Table(name = "CSH_USER")
 public class CshUser extends BaseDateTimeEntity {
 
@@ -79,11 +79,11 @@ public class CshUser extends BaseDateTimeEntity {
     @OneToMany(mappedBy = "cshUser", cascade = CascadeType.ALL)
     private List<CshUserRole> userRoleList = new ArrayList<>();
 
-    /**
-     * TODO:
-     * 1. 계정 정보 연관 관계 매핑
-     * 2. 비매너 지수 컬럼 추가
-     */
+    @ApiModelProperty("사용자 상세 고유 번호")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "cshUser", cascade = CascadeType.ALL)
+    private CshUserAccountInfo userAccountInfo;
+
+    // 해시태그는 굳이 들고 있을 필요 없다.
 
     @Builder
     public CshUser(Long id, String loginId, String password, String nickname, String name, String email, String phoneNumber, String profileImagePath, String profileThumbnailImagePath, String gender, String birthday, CshUserDetail userDetail, List<CshUserRole> userRoleList) {

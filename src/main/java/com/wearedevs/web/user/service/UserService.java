@@ -1,22 +1,18 @@
 package com.wearedevs.web.user.service;
 
 import com.wearedevs.common.enumeration.user.UserActiveStatus;
-import com.wearedevs.common.enumeration.user.UserAuthority;
 import com.wearedevs.common.exception.user.ExistsUserException;
+import com.wearedevs.common.objectmapper.securityuser.SecurityUserObjectMapper;
 import com.wearedevs.web.role.domain.CshUserRole;
 import com.wearedevs.web.user.domain.CshUser;
 import com.wearedevs.web.user.domain.CshUserDetail;
 import com.wearedevs.web.user.dto.SecurityUserDto;
 import com.wearedevs.web.user.dto.UserDetailInfoResponseDto;
-import com.wearedevs.web.user.dto.UserDto;
 import com.wearedevs.web.user.dto.UserRegisterRequestDto;
 import com.wearedevs.web.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,7 +32,8 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ModelMapper modelMapper;
+    //private final ModelMapper modelMapper;
+    private final SecurityUserObjectMapper securityUserObjectMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -46,15 +43,13 @@ public class UserService implements UserDetailsService {
 
         List<GrantedAuthority> authorities = new ArrayList<>();
         findCshUser.getUserRoleList().forEach(userRole -> {
-            authorities.add(
-                    new SimpleGrantedAuthority(userRole.getAuthority().getCode())
-            );
+            authorities.add(new SimpleGrantedAuthority(userRole.getAuthority().getCode()));
         });
 
-        /*SecurityUserDto securityUserDto = modelMapper.map(findCshUser, SecurityUserDto.class);
-        return securityUserDto;*/
+        //SecurityUserDto securityUserDto = modelMapper.map(findCshUser, SecurityUserDto.class);
+        SecurityUserDto securityUserDto = securityUserObjectMapper.toDto(findCshUser);
+        return securityUserDto;
 
-        return new User(findCshUser.getLoginId(), findCshUser.getPassword(), authorities);
 
     }
 
@@ -107,7 +102,7 @@ public class UserService implements UserDetailsService {
                 .areaThree(requestDto.getAreaThree())
                 .searchAreaPermitScope(requestDto.getSearchAreaPermitScope())
                 .userActiveStatus(UserActiveStatus.ACTIVITY)
-                .loginType(requestDto.getLoginType())
+                // TODO .loginType(requestDto.getLoginAccessType())
                 .privacyInfoDisplay(requestDto.getPrivacyInfoDisplay())
                 .build();
     }
@@ -123,7 +118,7 @@ public class UserService implements UserDetailsService {
                 .profileThumbnailImagePath(findUser.getProfileThumbnailImagePath())
                 .phoneNumber(findUser.getPhoneNumber())
                 .introduce(findUser.getUserDetail().getIntroduce())
-                .loginType(findUser.getUserDetail().getLoginType())
+                // TODO .loginType(findUser.getUserDetail().getLoginAccessType())
                 .userAuthorityList(
                         findUser.getUserRoleList().stream()
                                 .map(CshUserRole::getAuthority)

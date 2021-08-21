@@ -1,10 +1,8 @@
 package com.wearedevs.web.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wearedevs.common.enumeration.user.LoginType;
-import com.wearedevs.common.enumeration.user.UserAuthority;
+import com.wearedevs.common.enumeration.user.LoginAccessType;
 import com.wearedevs.web.role.dto.UserRoleDto;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,7 +41,7 @@ public class UserRegisterRequestDto {
     private String areaTwo;
     private String areaThree;
     private String searchAreaPermitScope;
-    private LoginType loginType;
+    private LoginAccessType loginAccessType;
     private String privacyInfoDisplay;
 
     private MultipartFile file;
@@ -55,7 +53,7 @@ public class UserRegisterRequestDto {
 
 
     /*@Builder
-    public UserRegisterRequestDto(String loginId, String password, String name, String email, MultipartFile file, String profileImageName, String introduce, String phoneNumber, LoginType loginType, UserAuthority authority) {
+    public UserRegisterRequestDto(String loginId, String password, String name, String email, MultipartFile file, String profileImageName, String introduce, String phoneNumber, LoginAccessType loginAccessType, UserAuthority authority) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -64,7 +62,7 @@ public class UserRegisterRequestDto {
         this.profileImageName = profileImageName;
         this.introduce = introduce;
         this.phoneNumber = phoneNumber;
-        this.loginType = loginType;
+        this.loginAccessType = loginAccessType;
         this.authority = authority;
     }*/
 }

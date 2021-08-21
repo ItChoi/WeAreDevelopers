@@ -20,13 +20,18 @@ public class LoginApiController {
     private final LoginService loginService;
 
     @PostMapping("/api/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto, BindingResult result,
+    public ResponseEntity<Boolean> login(@RequestBody LoginRequestDto requestDto, BindingResult result,
                                                   HttpServletRequest req, HttpServletResponse res) throws Exception {
         // TODO: result 처리하기.
-        loginService.changeLoginApproachKinds(requestDto, req);
-        LoginResponseDto test = loginService.loginProcess(requestDto, req, res);
+        boolean isLogin = false;
+        try {
+            loginService.changeLoginApproachKinds(requestDto, req);
+            isLogin = loginService.loginProcess(requestDto, req, res);
+        } catch (Exception e) {
+            log.error("ERROR: {}", e);
+        }
 
-        return new ResponseEntity<>(test, HttpStatus.OK);
+        return new ResponseEntity<>(isLogin, HttpStatus.OK);
     }
 
 

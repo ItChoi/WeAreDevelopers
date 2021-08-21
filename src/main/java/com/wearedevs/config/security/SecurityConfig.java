@@ -19,15 +19,13 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 // prePostEnabled를 메소드 단위로 추가하기 위하여 추가
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
-@EnableWebSecurity(debug = true)
-//@EnableWebSecurity
+//@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthProvider customProvider;
-//    private final AuthenticationProvider customProvider;
-    //private final
 
 
     // JWT
@@ -72,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 ).hasAnyRole(
                         UserAuthority.SUPERVISOR.getCode()
                 )*/
-                .and().formLogin() // 디폴트 시큐리티 프로세스 분석용
+                //.and().formLogin() // 디폴트 시큐리티 프로세스 분석용
                 .and().csrf()
                     .disable()
 
@@ -85,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .frameOptions()
                     .sameOrigin()
 
-                // 세션 사용 안하기 때문에 STATELESS로 설정
+                // 세션 사용 안하기 때문에 STATELESS로 설정 - usernameToken & JWT 방식 같이 사용해보기.
                 /*.and().sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/
                 .and().sessionManagement()
@@ -114,8 +112,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
-                // TODO: Default Spring Security 분석중 .and().authenticationProvider(customProvider);
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
+                .and().authenticationProvider(customProvider);
     }
 
 }
