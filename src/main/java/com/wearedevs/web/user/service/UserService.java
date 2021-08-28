@@ -46,6 +46,7 @@ public class UserService implements UserDetailsService {
             authorities.add(new SimpleGrantedAuthority(userRole.getAuthority().getCode()));
         });
 
+
         //SecurityUserDto securityUserDto = modelMapper.map(findCshUser, SecurityUserDto.class);
         SecurityUserDto securityUserDto = securityUserObjectMapper.toDto(findCshUser);
         return securityUserDto;

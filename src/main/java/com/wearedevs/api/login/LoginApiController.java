@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,11 +21,12 @@ public class LoginApiController {
     private final LoginService loginService;
 
     @PostMapping("/api/login")
-    public ResponseEntity<Boolean> login(@RequestBody LoginRequestDto requestDto, BindingResult result,
-                                                  HttpServletRequest req, HttpServletResponse res) throws Exception {
+    public ResponseEntity<Boolean> login(@Valid @RequestBody LoginRequestDto requestDto, BindingResult result,
+                                         HttpServletRequest req, HttpServletResponse res) throws Exception {
         // TODO: result 처리하기.
         boolean isLogin = false;
         try {
+            // Jwt || id, pw 여부 판단 필요 여부 체크하기
             loginService.changeLoginApproachKinds(requestDto, req);
             isLogin = loginService.loginProcess(requestDto, req, res);
         } catch (Exception e) {

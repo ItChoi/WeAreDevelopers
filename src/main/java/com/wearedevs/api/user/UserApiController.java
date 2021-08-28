@@ -46,6 +46,7 @@ public class UserApiController {
             return new ResponseEntity<>(responseDto, HttpStatus.BAD_REQUEST);
         }
 
+
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 

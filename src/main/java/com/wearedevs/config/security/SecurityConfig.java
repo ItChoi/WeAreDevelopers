@@ -1,18 +1,22 @@
 package com.wearedevs.config.security;
 
+import com.wearedevs.common.exception.jwt.CustomOAuth2AuthenticationHandler;
+import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
+import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
+import com.wearedevs.common.utils.jwt.TokenProvider;
+import com.wearedevs.config.JwtSecurityConfig;
 import com.wearedevs.config.security.provider.CustomAuthProvider;
+import com.wearedevs.web.oauth.service.CustomOAuth2UserService;
 import com.wearedevs.web.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 
@@ -29,22 +33,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     // JWT
-    /*private final TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final CustomOAuth2AuthenticationHandler customOAuth2AuthenticationHandler;*/
+    private final CustomOAuth2AuthenticationHandler customOAuth2AuthenticationHandler;
     // OAuth2
-    //private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(
-                //getAnyMatchersForWebSecurity()
-                "/css/**",
+                getAnyMatchersForWebSecurity()
+                /*"/css/**",
                 "/js/**",
                 "/img/**",
                 "/h2-console/**",
-                "favicon.ico"
+                "favicon.ico"*/
         );
     }
     private String[] getAnyMatchersForWebSecurity() {
@@ -61,10 +65,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.
                 authorizeRequests()
                 .antMatchers(
-                        //getAnyMatchersForHttpSecurity()
-                        "/api/login", "/api/authenticate",
-                        "/front/user/login"
+                        getAnyMatchersForHttpSecurity()
+                        /*"/api/login", "/api/authenticate",
+                        "/front/user/login"*/
                 ).permitAll()
+                .anyRequest().authenticated()
                 /*.antMatchers(
                         "/api/user/**"
                 ).hasAnyRole(
@@ -74,12 +79,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().csrf()
                     .disable()
 
-                /*.exceptionHandling()
+                .exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                    .accessDeniedHandler(jwtAccessDeniedHandler)*/
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 // H2 console을 위한 설정
-                .headers()
+                .and().headers()
                     .frameOptions()
                     .sameOrigin()
 
@@ -89,14 +94,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().sessionManagement()
                 .sessionAuthenticationStrategy(springSecuritySession())
 
-                /*// 커스텀 filter를 추가
+                // 커스텀 filter를 추가
                 .and().apply(new JwtSecurityConfig(tokenProvider))
 
                 // OAuth2
                 .and().oauth2Login()
                     .userInfoEndpoint()
                     .userService(customOAuth2UserService)
-                .and().successHandler(customOAuth2AuthenticationHandler)*/;
+                .and().successHandler(customOAuth2AuthenticationHandler);
     }
 
     @Bean
