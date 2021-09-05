@@ -37,17 +37,14 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // TODO: 인증 컬럼 추가 후 계정 인증 로직 추가 -> SecurityUserDto 내부에 작성
         CshUser findCshUser = userRepository.findByLoginId(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + "가 존재하지 않습니다."));
 
         List<GrantedAuthority> authorities = new ArrayList<>();
-        findCshUser.getUserRoleList().forEach(userRole -> {
-            authorities.add(new SimpleGrantedAuthority(userRole.getAuthority().getCode()));
-        });
-
-        //SecurityUserDto securityUserDto = modelMapper.map(findCshUser, SecurityUserDto.class);
+        authorities.add(new SimpleGrantedAuthority(findCshUser.getUserRole().getAuthority().getFullCode()));
         SecurityUserDto securityUserDto = securityUserObjectMapper.toDto(findCshUser);
+        securityUserDto.setAuthorities(authorities);
+
         return securityUserDto;
 
 
@@ -67,7 +64,7 @@ public class UserService implements UserDetailsService {
         String password = requestDto.getPassword();
 
         CshUserDetail userDetailBuilder = builderUserInfoByRequestDto(requestDto);
-        List<CshUserRole> userRoleListBuilder = builderUserRoleByRequestDto(requestDto);
+        CshUserRole userRoleBuilder = builderUserRoleByRequestDto(requestDto);
         CshUser userBuilder = CshUser.builder()
                 .loginId(requestDto.getLoginId())
                 .password(StringUtils.hasText(password) ? passwordEncoder.encode(password) : "")
@@ -80,18 +77,16 @@ public class UserService implements UserDetailsService {
                 .gender(requestDto.getGender())
                 .birthday(requestDto.getBirthday())
                 .userDetail(userDetailBuilder)
-                .userRoleList(userRoleListBuilder)
+                .userRole(userRoleBuilder)
                 .build();
         userDetailBuilder.setCshUser(userBuilder);
-        userRoleListBuilder.forEach(userRole -> userRole.setCshUser(userBuilder));
+        userRoleBuilder.setCshUser(userBuilder);
 
         return userBuilder;
     }
 
-    private List<CshUserRole> builderUserRoleByRequestDto(UserRegisterRequestDto requestDto) {
-        return requestDto.getUserRoleList().stream()
-                .map(userAuthority -> CshUserRole.builder().authority(userAuthority.getAuthority()).build())
-                .collect(Collectors.toList());
+    private CshUserRole builderUserRoleByRequestDto(UserRegisterRequestDto requestDto) {
+        return CshUserRole.builder().authority(requestDto.getUserRole().getAuthority()).build();
     }
 
     private CshUserDetail builderUserInfoByRequestDto(UserRegisterRequestDto requestDto) {
@@ -119,11 +114,7 @@ public class UserService implements UserDetailsService {
                 .phoneNumber(findUser.getPhoneNumber())
                 .introduce(findUser.getUserDetail().getIntroduce())
                 // TODO .loginType(findUser.getUserDetail().getLoginAccessType())
-                .userAuthorityList(
-                        findUser.getUserRoleList().stream()
-                                .map(CshUserRole::getAuthority)
-                                .collect(Collectors.toList())
-                )
+                .userAuthority(findUser.getUserRole().getAuthority())
                 .build();
     }
 
