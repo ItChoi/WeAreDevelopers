@@ -30,7 +30,7 @@ public class CshUserRole extends BaseDateTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @ApiModelProperty("사용자 고유 번호")
     @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private CshUser cshUser;

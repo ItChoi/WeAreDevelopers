@@ -2,7 +2,9 @@ package com.wearedevs.web.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wearedevs.common.enumeration.user.LoginAccessType;
+import com.wearedevs.common.enumeration.user.UserAuthority;
 import com.wearedevs.web.role.dto.UserRoleDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,7 +43,7 @@ public class UserRegisterRequestDto {
     private String areaTwo;
     private String areaThree;
     private String searchAreaPermitScope;
-    private LoginAccessType loginAccessType;
+    private LoginAccessType loginType;
     private String privacyInfoDisplay;
 
     private MultipartFile file;
@@ -49,20 +51,20 @@ public class UserRegisterRequestDto {
     // 계정 정보
 
     // 사용자 권한
-    private List<UserRoleDto> userRoleList = new ArrayList<>();
+    private UserRoleDto userRole;
 
 
-    /*@Builder
-    public UserRegisterRequestDto(String loginId, String password, String name, String email, MultipartFile file, String profileImageName, String introduce, String phoneNumber, LoginAccessType loginAccessType, UserAuthority authority) {
+    @Builder
+    public UserRegisterRequestDto(String loginId, String password, String name, String email, MultipartFile file, String profileImagePath, String introduce, String phoneNumber, LoginAccessType loginType, UserAuthority authority) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
         this.email = email;
         this.file = file;
-        this.profileImageName = profileImageName;
+        this.profileImagePath = profileImagePath;
         this.introduce = introduce;
         this.phoneNumber = phoneNumber;
-        this.loginAccessType = loginAccessType;
-        this.authority = authority;
-    }*/
+        this.loginType = loginType;
+        this.userRole.setAuthority(authority);
+    }
 }

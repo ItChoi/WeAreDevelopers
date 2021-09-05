@@ -111,8 +111,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private String[] getAnyMatchersForHttpSecurity() {
         return new String[] {
-                "/api/login", "/api/authenticate",
-                "/front/user/login"};
+                "/api/login",
+                "/api/authenticate",
+                "/front/user/login"
+        };
     }
 
     @Override

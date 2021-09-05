@@ -1,7 +1,9 @@
 package com.wearedevs.web.user.domain;
 
 import com.wearedevs.common.domain.BaseDateTimeEntity;
+import com.wearedevs.common.enumeration.user.LoginAccessType;
 import com.wearedevs.web.role.domain.CshUserRole;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
@@ -25,11 +27,17 @@ import java.util.List;
 @Table(name = "CSH_USER")
 public class CshUser extends BaseDateTimeEntity {
 
+    @ApiModelProperty("사용자 고유 번호")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    @ApiModelProperty("사용자 고유 번호")
     @Column(name = "ID", nullable = false)
     private Long id;
+
+    @ApiModelProperty("로그인 타입 (HOME, GOOGLE, KAKAO, FACEBOOK, ..)")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "LOGIN_TYPE")
+    private LoginAccessType loginType;
+
 
     @ApiModelProperty("로그인 아이디")
     @Column(name = "LOGIN_ID")
@@ -76,8 +84,8 @@ public class CshUser extends BaseDateTimeEntity {
     private CshUserDetail userDetail;
 
     @ApiModelProperty("사용자 권한")
-    @OneToMany(mappedBy = "cshUser", cascade = CascadeType.ALL)
-    private List<CshUserRole> userRoleList = new ArrayList<>();
+    @OneToOne(mappedBy = "cshUser", cascade = CascadeType.ALL)
+    private CshUserRole userRole;
 
     @ApiModelProperty("사용자 상세 고유 번호")
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "cshUser", cascade = CascadeType.ALL)
@@ -86,7 +94,7 @@ public class CshUser extends BaseDateTimeEntity {
     // 해시태그는 굳이 들고 있을 필요 없다.
 
     @Builder
-    public CshUser(Long id, String loginId, String password, String nickname, String name, String email, String phoneNumber, String profileImagePath, String profileThumbnailImagePath, String gender, String birthday, CshUserDetail userDetail, List<CshUserRole> userRoleList) {
+    public CshUser(Long id, String loginId, String password, String nickname, String name, String email, String phoneNumber, String profileImagePath, String profileThumbnailImagePath, String gender, String birthday, CshUserDetail userDetail, CshUserRole userRole) {
         this.id = id;
         this.loginId = loginId;
         this.password = password;
@@ -99,6 +107,6 @@ public class CshUser extends BaseDateTimeEntity {
         this.gender = gender;
         this.birthday = birthday;
         this.userDetail = userDetail;
-        this.userRoleList = userRoleList;
+        this.userRole = userRole;
     }
 }

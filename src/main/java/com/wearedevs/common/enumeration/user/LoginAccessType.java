@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum LoginAccessType {
-    BASIC("홈페이지 가입", "basic"),
+    DEFAULT("홈페이지 가입", "basic"),
+    HOME("홈페이지 가입", "basic"),
     KAKAO("카카오", "kakao"),
     GOOGLE("구글", "google"),
     NAVER("네이버", "naver"),
@@ -24,6 +25,6 @@ public enum LoginAccessType {
             }
         }
 
-        return BASIC;
+        return DEFAULT;
     }
 }
