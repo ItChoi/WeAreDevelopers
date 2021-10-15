@@ -43,3 +43,4 @@ application-local-db.yml
 
 ### secret .sql file ###
 *.sql
+wearedevs.md
