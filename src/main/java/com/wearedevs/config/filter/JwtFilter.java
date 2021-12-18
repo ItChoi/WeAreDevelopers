@@ -2,7 +2,9 @@ package com.wearedevs.config.filter;
 
 import com.wearedevs.common.dto.session.SessionUser;
 import com.wearedevs.common.enumeration.user.LoginAccessType;
-import com.wearedevs.common.utils.jwt.TokenProvider;
+import com.wearedevs.common.util.msg.ExceptionMsgUtil;
+import com.wearedevs.config.provider.TokenProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,34 +18,28 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@RequiredArgsConstructor
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
     public static final String AUTHORIZATION_HEADER = "Authorization";
-    private TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
 
-    public JwtFilter(TokenProvider tokenProvider) {
+    /*public JwtFilter(TokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
-    }
+    }*/
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // JWT 토큰의 인증 정보를 현재 실행 중인 Security Context에 저장하는 역할을 수행한다.
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
-        /*if (!StringUtils.hasText(jwt)) {
-            SessionUser findUserBySession = findOAuth2InfoAtSession(httpServletRequest);
-            if (isAvailableOAuth2JwtToken(findUserBySession)) {
-                createOAuth2JwtToken(findUserBySession);
-            }
-        }*/
 
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Authentication authentication = tokenProvider.getAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
             log.debug("Security Context에 '{}' 인증 정보를 저장했습니다. uri: {}", authentication.getName(), requestURI);
         } else {
-            log.debug("유효한 JWT 토큰이 없습니다. uri: {}", requestURI);
+            log.debug(ExceptionMsgUtil.WRONG_JWT_TOKEN + " uri: {}", requestURI);
         }
 
         chain.doFilter(request, response);

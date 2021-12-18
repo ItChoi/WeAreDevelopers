@@ -51,11 +51,9 @@ public class ApplicationBasicTest {
         assertThat(b).isFalse();
     }
 
-    @Test
-    void 서드파티_권한_생성_테스트() {
-        List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(UserAuthority.ANONYMOUS.getFullCode());
-        assertThat(authorityList).isNotNull();
-        assertEquals(1, authorityList.size());
 
+    @Test
+    void test() {
+        System.out.println(System.currentTimeMillis());
     }
 }

@@ -2,6 +2,8 @@ plugins {
     //id 'org.springframework.boot' version '2.4.3' // ~ 2021/08/07
     id 'org.springframework.boot' version '2.5.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    //querydsl 추가
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
     id 'java'
 }
 
@@ -24,7 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+    //implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.h2database:h2'
@@ -50,7 +52,7 @@ dependencies {
     implementation 'commons-io:commons-io:2.7'
 
     // security
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+    //implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
     // 스프링 부트 validation 추가
     implementation 'org.springframework.boot:spring-boot-starter-validation'
@@ -68,4 +70,24 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+//querydsl 추가 시작
+def querydslDir = "$buildDir/generated/querydsl"
+
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+//에디터 설정
+sourceSets {
+    main.java.srcDir querydslDir
+}
+//컴파일 클래스 패스에 넣음.
+configurations {
+    querydsl.extendsFrom compileClasspath
+}
+//어노테이션 프로세서와 맞물려서 빌드시 생성
+compileQuerydsl {
+    options.annotationProcessorPath = configurations.querydsl
 }
