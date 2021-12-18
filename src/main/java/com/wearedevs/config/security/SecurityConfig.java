@@ -3,12 +3,11 @@ package com.wearedevs.config.security;
 import com.wearedevs.common.exception.jwt.CustomOAuth2AuthenticationHandler;
 import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
 import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
-import com.wearedevs.common.utils.jwt.TokenProvider;
-import com.wearedevs.config.JwtSecurityConfig;
-import com.wearedevs.config.security.provider.CustomAuthProvider;
-import com.wearedevs.web.oauth.service.CustomOAuth2UserService;
-import com.wearedevs.web.user.service.UserService;
+import com.wearedevs.config.jwt.JwtSecurityConfig;
+import com.wearedevs.config.provider.CustomAuthProvider;
+import com.wearedevs.config.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 
@@ -27,7 +27,7 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserService userService;
+    //private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthProvider customProvider;
 
@@ -38,17 +38,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final CustomOAuth2AuthenticationHandler customOAuth2AuthenticationHandler;
     // OAuth2
-    private final CustomOAuth2UserService customOAuth2UserService;
+    //private final CustomOAuth2UserService customOAuth2UserService;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
+        // 정적 파일들은 보안 필터를 거치지 않고 통과되도록 설정 (permitAll은 보안 필터는 거친다) (비용적인 면에서 더 좋다.)
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
         web.ignoring().antMatchers(
                 getAnyMatchersForWebSecurity()
-                /*"/css/**",
-                "/js/**",
-                "/img/**",
-                "/h2-console/**",
-                "favicon.ico"*/
         );
     }
     private String[] getAnyMatchersForWebSecurity() {
@@ -57,7 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/js/**",
                 "/img/**",
                 "/h2-console/**",
-                "favicon.ico"};
+                "favicon.ico"
+        };
     }
 
     @Override
@@ -66,16 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 authorizeRequests()
                 .antMatchers(
                         getAnyMatchersForHttpSecurity()
-                        /*"/api/login", "/api/authenticate",
-                        "/front/user/login"*/
                 ).permitAll()
                 .anyRequest().authenticated()
-                /*.antMatchers(
-                        "/api/user/**"
-                ).hasAnyRole(
-                        UserAuthority.SUPERVISOR.getCode()
-                )*/
-                //.and().formLogin() // 디폴트 시큐리티 프로세스 분석용
                 .and().csrf()
                     .disable()
 
@@ -88,20 +78,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .frameOptions()
                     .sameOrigin()
 
+                .and().formLogin();
+
+
+
                 // 세션 사용 안하기 때문에 STATELESS로 설정 - usernameToken & JWT 방식 같이 사용해보기.
                 /*.and().sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)*/
-                .and().sessionManagement()
-                .sessionAuthenticationStrategy(springSecuritySession())
+                /*.and().sessionManagement()
+                .sessionAuthenticationStrategy(springSecuritySession())*/
 
                 // 커스텀 filter를 추가
-                .and().apply(new JwtSecurityConfig(tokenProvider))
+                //.and().apply(new JwtSecurityConfig(tokenProvider));
 
                 // OAuth2
-                .and().oauth2Login()
+                /*.and().oauth2Login()
                     .userInfoEndpoint()
                     .userService(customOAuth2UserService)
-                .and().successHandler(customOAuth2AuthenticationHandler);
+                .and().successHandler(customOAuth2AuthenticationHandler);*/
     }
 
     @Bean
@@ -113,14 +107,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new String[] {
                 "/api/login",
                 "/api/authenticate",
-                "/front/user/login"
+                "/front/user/login",
+                "/oauth2/**"
         };
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
-                .and().authenticationProvider(customProvider);
+        String password = passwordEncoder.encode("1111");
+        // 인메모리 계정 추가
+        auth.inMemoryAuthentication()
+                .withUser("user")
+                .password(password)
+                .roles("USER");
+        auth.inMemoryAuthentication()
+                .withUser("manager")
+                .password("{noop}1111")
+                .roles("MANAGER");
+        auth.inMemoryAuthentication()
+                .withUser("admin")
+                .password(password)
+                .roles("ADMIN");
+
+
+
+        /*auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
+                .and().authenticationProvider(customProvider);*/
     }
 
 }
