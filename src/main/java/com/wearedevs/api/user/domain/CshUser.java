@@ -3,10 +3,12 @@ package com.wearedevs.api.user.domain;
 import com.wearedevs.common.domain.BaseDateTimeEntity;
 import com.wearedevs.common.enumeration.user.GenderType;
 import com.wearedevs.common.enumeration.user.LoginAccessType;
+import lombok.Getter;
 
 import javax.persistence.*;
 
 
+@Getter
 @Table(name = "CSH_USER")
 @Entity
 public class CshUser extends BaseDateTimeEntity {

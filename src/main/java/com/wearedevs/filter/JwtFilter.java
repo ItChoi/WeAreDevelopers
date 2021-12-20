@@ -1,9 +1,9 @@
-package com.wearedevs.config.filter;
+package com.wearedevs.filter;
 
 import com.wearedevs.common.dto.session.SessionUser;
 import com.wearedevs.common.enumeration.user.LoginAccessType;
 import com.wearedevs.common.util.msg.ExceptionMsgUtil;
-import com.wearedevs.config.provider.TokenProvider;
+import com.wearedevs.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

@@ -1,4 +1,4 @@
-package com.wearedevs.config.provider;
+package com.wearedevs.provider;
 
 import com.wearedevs.common.util.msg.ExceptionMsgUtil;
 import io.jsonwebtoken.*;

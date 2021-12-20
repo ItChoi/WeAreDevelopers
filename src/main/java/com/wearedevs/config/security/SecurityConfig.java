@@ -1,23 +1,27 @@
 package com.wearedevs.config.security;
 
+import com.wearedevs.api.user.service.UserService;
 import com.wearedevs.common.exception.jwt.CustomOAuth2AuthenticationHandler;
 import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
 import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
-import com.wearedevs.config.jwt.JwtSecurityConfig;
-import com.wearedevs.config.provider.CustomAuthProvider;
-import com.wearedevs.config.provider.TokenProvider;
+import com.wearedevs.handler.security.CustomAuthenticationSuccessHandler;
+import com.wearedevs.provider.CustomAuthProvider;
+import com.wearedevs.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 
 // prePostEnabled를 메소드 단위로 추가하기 위하여 추가
@@ -27,10 +31,13 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    //private final UserService userService;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthProvider customProvider;
-
+    private final AuthenticationDetailsSource authenticationDetailsSource;
+    private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final AuthenticationFailureHandler customAuthenticationFailureHandler;
+    private AccessDeniedHandler customFormAccessDeniedHandler;
 
     // JWT
     private final TokenProvider tokenProvider;
@@ -71,14 +78,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                    //.accessDeniedHandler(jwtAccessDeniedHandler) // jwt
+                    .accessDeniedHandler(customFormAccessDeniedHandler)
 
                 // H2 console을 위한 설정
                 .and().headers()
                     .frameOptions()
                     .sameOrigin()
 
-                .and().formLogin();
+                // FormLogin - spring security
+                .and()
+                    .formLogin()
+                    //.loginPage("/login")
+                    //.loginProcessingUrl("login_proc")
+                    .authenticationDetailsSource(authenticationDetailsSource)
+                    .defaultSuccessUrl("/")
+                    .successHandler(customAuthenticationSuccessHandler)
+                    .failureHandler(customAuthenticationFailureHandler)
+                    .permitAll();
+
 
 
 
@@ -106,8 +124,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private String[] getAnyMatchersForHttpSecurity() {
         return new String[] {
                 "/api/login",
+                "/api/login/**",
                 "/api/authenticate",
-                "/front/user/login",
                 "/oauth2/**"
         };
     }
@@ -116,23 +134,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         String password = passwordEncoder.encode("1111");
         // 인메모리 계정 추가
-        auth.inMemoryAuthentication()
-                .withUser("user")
-                .password(password)
-                .roles("USER");
-        auth.inMemoryAuthentication()
-                .withUser("manager")
-                .password("{noop}1111")
-                .roles("MANAGER");
-        auth.inMemoryAuthentication()
-                .withUser("admin")
-                .password(password)
-                .roles("ADMIN");
-
-
-
-        /*auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
-                .and().authenticationProvider(customProvider);*/
+        auth.inMemoryAuthentication().withUser("user").password(password).roles("USER");
+        auth.inMemoryAuthentication().withUser("manager").password("{noop}1111").roles("MANAGER");
+        auth.inMemoryAuthentication().withUser("admin").password(password).roles("ADMIN");
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
+                .and().authenticationProvider(customProvider);
     }
 
 }

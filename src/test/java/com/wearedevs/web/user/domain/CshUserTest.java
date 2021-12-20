@@ -1,7 +1,6 @@
 package com.wearedevs.web.user.domain;
 
 import com.wearedevs.api.user.domain.CshUser;
-import com.wearedevs.common.exception.user.NotAvailableLoginIdException;
 import com.wearedevs.common.util.RegexpUtil;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
