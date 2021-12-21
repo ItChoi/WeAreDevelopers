@@ -34,18 +34,16 @@
     - PHONE_NUMBER varchar(50) - 핸드폰 번호
     - PROFILE_IMAGE_PATH varchar(200) - 프로필 사진 경로
     - PROFILE_THUMBNAIL_IMAGE_PATH varchar(200) - 프로필 썸네일 사진 경로
-    - GENDER char(1) (F:여성, M남성, U:확인불가) - 성별
-    - BIRTHDAY varchar(50) - 출생연도
+    - GENDER char(1) 성별 (F:여성, M남성, U:확인불가)
+    - BIRTHDAY varchar(50) - 출생연도 (ex: 910429)
 
 - CSH_USER_DETAIL (사용자 상세)
     - ID bigint primary key - 시퀀스
     - USER_ID bigint foreign key - 사용자 시퀀스
     - INTRODUCE varchar(2000) - 간략한 자기 소개 내용
-    - 스터디 참여 이유 (X)
-    - 원하는 공부 (X) - 해시태그 대체
-    - AREA_ONE varchar(100) - 사는 시
-    - AREA_TWO varchar(100) - 사는 구
-    - AREA_THREE varchar(100) - 거주 동
+    - AREA_ONE varchar(100) - 특별시 / 광역시 / 도
+    - AREA_TWO varchar(100) - 구 / 군
+    - AREA_THREE varchar(100) - 동 / 읍, 면, 리
     - SEARCH_AREA_PERMIT_SCOPE varchar(50) - 내 지역 오프라인 스터디만 구하기 (Status 관리 -AREA1 없으면 NULL)
     - USER_ACTIVE_STATUS varchar(50) -사용자 활동 상태 (활동, 휴면, 회원탈퇴) - (비활동 퇴장, 강퇴)
     - LOGIN_TYPE varchar(50) - 사용자 로그인 타입 (카카오, 네이버, 인스타그램, 페이스북, ...)

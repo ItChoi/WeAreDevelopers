@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum LoginType {
-    LOGIN("로그인", "login"),
-    LOGOUT("로그아웃", "logout");
+public enum UserRequireInfo {
+    USERNAME("아이디"),
+    PASSWORD("비밀번호");
 
     private final String text;
-    private final String code;
 }

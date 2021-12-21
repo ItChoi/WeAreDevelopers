@@ -1,10 +1,13 @@
 package com.wearedevs.common.util;
 
+import com.wearedevs.common.util.msg.ExceptionMsgUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -54,6 +57,9 @@ public class SecurityUtil {
         return Optional.ofNullable(SecurityContextHolder.getContext());
     }
 
+    public static boolean validateEmptyForUsernameAndPw(String username, String password) {
+        return StringUtils.hasText(username) && StringUtils.hasText(password);
+    }
 
 
 }

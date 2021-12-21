@@ -4,13 +4,13 @@ import com.wearedevs.api.user.service.UserService;
 import com.wearedevs.common.exception.jwt.CustomOAuth2AuthenticationHandler;
 import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
 import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
-import com.wearedevs.handler.security.CustomAuthenticationSuccessHandler;
 import com.wearedevs.provider.CustomAuthProvider;
 import com.wearedevs.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -29,6 +29,7 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 @RequiredArgsConstructor
 //@EnableWebSecurity(debug = true)
 @EnableWebSecurity
+@Order(1)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
@@ -73,18 +74,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         getAnyMatchersForHttpSecurity()
                 ).permitAll()
                 .anyRequest().authenticated()
-                .and().csrf()
-                    .disable()
+                /*.and().csrf()
+                    .disable()*/
 
-                .exceptionHandling()
+                // ajax 인증 filter 추가 - 실제 추가하고자 하는 필터가 기존 필터 앞에 위치할 때, (UsernamePasswordAuthenticationFilter 필터 앞에 위치 시킨다.)
+                //.and().addFilterBefore(new AjaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+
+                .and().exceptionHandling()
                     .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     //.accessDeniedHandler(jwtAccessDeniedHandler) // jwt
                     .accessDeniedHandler(customFormAccessDeniedHandler)
+
 
                 // H2 console을 위한 설정
                 .and().headers()
                     .frameOptions()
                     .sameOrigin()
+
 
                 // FormLogin - spring security
                 .and()
@@ -96,6 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .successHandler(customAuthenticationSuccessHandler)
                     .failureHandler(customAuthenticationFailureHandler)
                     .permitAll();
+        http.csrf().disable();
 
 
 

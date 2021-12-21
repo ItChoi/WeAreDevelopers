@@ -14,6 +14,7 @@ public class UserDto {
     private Long id; // 사용자 PK
     private LoginAccessType loginType; // 사용자 로그인 타입 (BASIC, KAKAO, GOOGLE, NAVER, ...)
     private String loginId; // 로그인 아이디
+    private String username; // 로그인 아이디
     private String password; // 비밀번호
     private String name; // 이름
     private String email; // 이메일
@@ -23,10 +24,11 @@ public class UserDto {
     private String birthday; // 생년월일
 
     @Builder
-    public UserDto(Long id, LoginAccessType loginType, String loginId, String password, String name, String email, String phoneNumber, String profileImagePath, GenderType gender, String birthday) {
+    public UserDto(Long id, LoginAccessType loginType, String loginId, String username, String password, String name, String email, String phoneNumber, String profileImagePath, GenderType gender, String birthday) {
         this.id = id;
         this.loginType = loginType;
         this.loginId = loginId;
+        this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
