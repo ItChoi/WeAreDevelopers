@@ -18,4 +18,10 @@ public class ExceptionMsgUtil {
 
     // 인증 방식 관련
     public static final String NOT_AJAX_REQUEST = "AJAX 인증 방식이 아닙니다.";
+
+    // 인증 관련
+    public static final String UN_AUTHORIZED = "인증된 사용자가 아닙니다.";
+
+    // 인가 관련
+    public static final String FORBIDDEN = "해당 자원 접근 권한이 없습니다.";
 }

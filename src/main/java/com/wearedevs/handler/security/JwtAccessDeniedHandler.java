@@ -8,12 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomAccessDeniedHandler implements AccessDeniedHandler {
-    private final String errorPage = "/denied";
+// 필요한 권한이 존재하지 않는 경우 403 Forbidden 에러 리턴
+public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        String deniedUrl = errorPage + "?exception=" + accessDeniedException.getMessage();
-        response.sendRedirect(deniedUrl);
+        response.sendError(HttpServletResponse.SC_FORBIDDEN);
     }
 }

@@ -1,9 +1,9 @@
 package com.wearedevs.config.security;
 
 import com.wearedevs.api.user.service.UserService;
-import com.wearedevs.common.exception.jwt.CustomOAuth2AuthenticationHandler;
-import com.wearedevs.common.exception.jwt.JwtAccessDeniedHandler;
-import com.wearedevs.common.exception.jwt.JwtAuthenticationEntryPoint;
+import com.wearedevs.security.common.JwtAuthenticationEntryPoint;
+import com.wearedevs.handler.security.FormAuthenticationFailureHandler;
+import com.wearedevs.handler.security.FormAuthenticationSuccessHandler;
 import com.wearedevs.provider.CustomAuthProvider;
 import com.wearedevs.provider.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -36,15 +36,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthProvider customProvider;
     private final AuthenticationDetailsSource authenticationDetailsSource;
-    private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    private final AuthenticationFailureHandler customAuthenticationFailureHandler;
     private AccessDeniedHandler customFormAccessDeniedHandler;
 
     // JWT
     private final TokenProvider tokenProvider;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final CustomOAuth2AuthenticationHandler customOAuth2AuthenticationHandler;
+    //private JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    //private final OAuth2AuthenticationHandler OAuth2AuthenticationHandler;
     // OAuth2
     //private final CustomOAuth2UserService customOAuth2UserService;
 
@@ -99,8 +97,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     //.loginProcessingUrl("login_proc")
                     .authenticationDetailsSource(authenticationDetailsSource)
                     .defaultSuccessUrl("/")
-                    .successHandler(customAuthenticationSuccessHandler)
-                    .failureHandler(customAuthenticationFailureHandler)
+                    .successHandler(formAuthenticationSuccessHandler())
+                    .failureHandler(formAuthenticationFailureHandler())
                     .permitAll();
         http.csrf().disable();
 
@@ -123,11 +121,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().successHandler(customOAuth2AuthenticationHandler);*/
     }
 
-    @Bean
-    public SessionFixationProtectionStrategy springSecuritySession() {
-        return new SessionFixationProtectionStrategy();
-    }
-
     private String[] getAnyMatchersForHttpSecurity() {
         return new String[] {
                 "/api/login",
@@ -146,6 +139,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication().withUser("admin").password(password).roles("ADMIN");
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder)
                 .and().authenticationProvider(customProvider);
+    }
+
+    @Bean
+    public SessionFixationProtectionStrategy springSecuritySession() {
+        return new SessionFixationProtectionStrategy();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler formAuthenticationSuccessHandler() {
+        return new FormAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler formAuthenticationFailureHandler() {
+        return new FormAuthenticationFailureHandler();
     }
 
 }
