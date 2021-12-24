@@ -1,11 +1,13 @@
 package com.wearedevs.api.user.domain;
 
+import com.wearedevs.api.role.domain.UserRole;
 import com.wearedevs.common.domain.BaseDateTimeEntity;
 import com.wearedevs.common.enumeration.user.GenderType;
 import com.wearedevs.common.enumeration.user.LoginAccessType;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Getter
@@ -19,6 +21,9 @@ public class CshUser extends BaseDateTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<UserRole> userRoleList;
 
     /**
      * 사용자 로그인 타입 (BASIC, KAKAO, GOOGLE, NAVER, ...)

@@ -1,16 +1,23 @@
 package com.wearedevs.config.security;
 
+import com.wearedevs.api.resource.service.ResourceService;
 import com.wearedevs.api.user.service.UserService;
-import com.wearedevs.security.common.JwtAuthenticationEntryPoint;
 import com.wearedevs.handler.security.FormAuthenticationFailureHandler;
 import com.wearedevs.handler.security.FormAuthenticationSuccessHandler;
 import com.wearedevs.provider.CustomAuthProvider;
 import com.wearedevs.provider.TokenProvider;
+import com.wearedevs.security.common.JwtAuthenticationEntryPoint;
+import com.wearedevs.security.factory.UrlResourcesMapFactoryBean;
+import com.wearedevs.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,9 +27,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
+
+import java.util.Arrays;
+import java.util.List;
 
 // prePostEnabled를 메소드 단위로 추가하기 위하여 추가
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -45,6 +57,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //private final OAuth2AuthenticationHandler OAuth2AuthenticationHandler;
     // OAuth2
     //private final CustomOAuth2UserService customOAuth2UserService;
+    private final ResourceService resourceService;
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -100,6 +114,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .successHandler(formAuthenticationSuccessHandler())
                     .failureHandler(formAuthenticationFailureHandler())
                     .permitAll();
+
+        //http.addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class); // 기존 Filter 앞에 custom Filter가 위치하도록 (custom이 먼저 실행된다.)
+
         http.csrf().disable();
 
 
@@ -154,6 +171,37 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationFailureHandler formAuthenticationFailureHandler() {
         return new FormAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
+        // 인가 처리를 커스텀 방식 사용하도록 설정
+        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+        filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+        // affirmativeBased (보편적, 많이 사용), consensusBased, unanimousBased
+        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
+        filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean()); // 인가 처리 전 인증된 사용자인지 검증이 필요
+        return filterSecurityInterceptor;
+    }
+
+    private AccessDecisionManager affirmativeBased() {
+        AffirmativeBased affirmativeBased = new AffirmativeBased(getAccessDecisionVoters());
+        return affirmativeBased;
+    }
+
+    private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
+        return Arrays.asList(new RoleVoter());
+    }
+
+    @Bean
+    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
+    }
+
+    private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
+        UrlResourcesMapFactoryBean urlResourcesMapFactoryBean = new UrlResourcesMapFactoryBean(resourceService);
+        //urlResourcesMapFactoryBean.setResourceService(resourceService);
+        return urlResourcesMapFactoryBean;
     }
 
 }

@@ -6,7 +6,7 @@
 5. CSH_USER_CAREER_INFO (사용자 경력 정보)
 6. CSH_USER_CAREER_DETAIL_INFO (사용자 경력 상세 정보)
 7. CSH_COMPANY_ASSIGNED_WORK_DETAIL (회사 담당 업무 상세)
-8. CSH_USER_ROLE (사용자 권한) 
+8. CSH_USER_ROLE (사용자 권한)
 9. CSH_ROLE_ACCESS_CONTROL (권한 접근 통제)
 10. CSH_ROLE_CRUD_SCOPE (권한 CRUD 범위)
 11. CSH_COMMON_ACCOUNT_CONFIG (사용자 공통 계정 설정 정보)
@@ -14,14 +14,6 @@
 13. CSH_USER_ACCOUNT_INFO (사용자 계정 정보)
 14. CSH_LOG_LAST_LOGIN (사용자 로그인 로그)
 
-
-## 데이터베이스 테이블 연관 관계 (TODO 정리 나중)
-- KS_USER
-    - (1:N) KS_ELECTRONIC_AUTHORIZATION_DOCUMENT
-        - (1:N) KS_ELECTRONIC_AUTHORIZATION_TARGET_PERSON
-    - (1:1 KS_USER_ROLE)
-- KS_DOCUMENT_CATEGORY
-    - (1:1) KS_ELECTRONIC_AUTHORIZATION_DOCUMENT
 
 ## 데이터베이스 테이블 상세 정보 (TODO 정리 나중)
 - CSH_USER (사용자)
@@ -107,3 +99,34 @@
     - ID bigint primary key - 시퀀스
     - USER_ROLE_ID bigint foreign key - 사용자 권한 시퀀스
     - MODE varchar(50) - 모드 (ex: create, read, update, delete)
+
+
+## 인증, 인가
+- User (사용자)
+  - (1:N) User_Role (사용자 권한)
+    - (N:1) Role (권한)
+      - (1:N) RoleResource (권한 자원)
+        - (N:1) Resources (자원)
+- RoleHierarchy (권한 계층)
+
+- USER_ROLE
+  - ID
+  - USER_ID
+  - ROLE_ID
+
+- ROLE
+  - ID
+  - ROLE_DESCRIPTION
+  - ROLE_NAME
+
+- ROLE_RESOURCE
+  - ID
+  - HTTP_METHOD
+  - ORDER_NUM
+  - RESOURCE_NAME (url name, method name, ...)
+  - RESOURCE_TYPE (url, method, ...)
+
+- RESOURCES
+  - ID
+  - ROLE_RESOURCE_ID
+  - ROLE_ID

@@ -31,4 +31,5 @@ public class CustomBean {
         //return new BCryptPasswordEncoder();
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
 }
