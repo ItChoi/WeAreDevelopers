@@ -14,6 +14,7 @@ public class UrlResourcesMapFactoryBean implements FactoryBean<LinkedHashMap<Req
     private final ResourceService resourceService;
     private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> resourceMap;
 
+
     @Override
     public LinkedHashMap<RequestMatcher, List<ConfigAttribute>> getObject() throws Exception {
         if (resourceMap == null) {
@@ -35,4 +36,6 @@ public class UrlResourcesMapFactoryBean implements FactoryBean<LinkedHashMap<Req
     /*public void setResourceService(ResourceService resourceService) {
         this.resourceService = resourceService;
     }*/
+
+
 }

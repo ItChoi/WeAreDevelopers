@@ -2,6 +2,7 @@ package com.wearedevs.config.security;
 
 import com.wearedevs.api.resource.service.ResourceService;
 import com.wearedevs.api.user.service.UserService;
+import com.wearedevs.filter.PermitAllFilter;
 import com.wearedevs.handler.security.FormAuthenticationFailureHandler;
 import com.wearedevs.handler.security.FormAuthenticationSuccessHandler;
 import com.wearedevs.provider.CustomAuthProvider;
@@ -16,8 +17,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
-import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.access.vote.RoleHierarchyVoter;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -28,12 +30,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.SessionFixationProtectionStrategy;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 // prePostEnabled를 메소드 단위로 추가하기 위하여 추가
@@ -59,6 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     //private final CustomOAuth2UserService customOAuth2UserService;
     private final ResourceService resourceService;
 
+    //private String[] permitAllResources = {"/", "/api/login"};
+
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -82,9 +85,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.
                 authorizeRequests()
-                .antMatchers(
+                /*.
+                customFilterSecurityInterceptor에서 permitAllFilter를 통해 다 처리 한다.
+                antMatchers(
                         getAnyMatchersForHttpSecurity()
-                ).permitAll()
+                ).permitAll()*/
                 .anyRequest().authenticated()
                 /*.and().csrf()
                     .disable()*/
@@ -174,14 +179,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
+    public PermitAllFilter customFilterSecurityInterceptor() throws Exception {
         // 인가 처리를 커스텀 방식 사용하도록 설정
-        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
-        filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+        //FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+        PermitAllFilter permitAllFilter = new PermitAllFilter(getAnyMatchersForHttpSecurity()); // PermitAllFilter 추가
+        permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
         // affirmativeBased (보편적, 많이 사용), consensusBased, unanimousBased
-        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
-        filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean()); // 인가 처리 전 인증된 사용자인지 검증이 필요
-        return filterSecurityInterceptor;
+        permitAllFilter.setAccessDecisionManager(affirmativeBased());
+        permitAllFilter.setAuthenticationManager(authenticationManagerBean()); // 인가 처리 전 인증된 사용자인지 검증이 필요
+        return permitAllFilter;
     }
 
     private AccessDecisionManager affirmativeBased() {
@@ -190,12 +196,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
-        return Arrays.asList(new RoleVoter());
+        List<AccessDecisionVoter<? extends Object>> accessDecisionVoterList = new ArrayList<>();
+        accessDecisionVoterList.add(roleVoter());
+        //return Arrays.asList(new RoleVoter()); // TODO::: 권한 계층 조건 여기서 주면 된다. ex) Manager가 User 권한을 포함한다던가... (SpringInitializer.java에서 권한 계층 정보 세팅)
+        return accessDecisionVoterList;
+    }
+
+    @Bean
+    public AccessDecisionVoter<? extends Object> roleVoter() {
+        RoleHierarchyVoter roleHierarchyVoter = new RoleHierarchyVoter(roleHierarchy());
+        return roleHierarchyVoter;
+    }
+
+    @Bean
+    public RoleHierarchyImpl roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        return roleHierarchy;
     }
 
     @Bean
     public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
-        return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject(), resourceService);
     }
 
     private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
